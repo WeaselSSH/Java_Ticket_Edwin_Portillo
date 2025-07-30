@@ -1,0 +1,55 @@
+package java_ticket_edwin_portillo;
+
+public abstract class Usuario {
+
+    protected String nombre;
+    protected String usuario;
+    protected String contrasenia;
+    protected int edad;
+
+    public Usuario(String nombre, String usuario, String contrasenia, int edad) {
+        this.nombre = nombre;
+        this.usuario = usuario;
+        this.contrasenia = contrasenia;
+        this.edad = edad;
+    }
+
+    public abstract String getRol();
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public boolean verificarPassword(String input) {
+        return contrasenia.equals(input);
+    }
+
+}
