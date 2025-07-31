@@ -48,7 +48,7 @@ public abstract class Usuario {
         this.edad = edad;
     }
 
-    public boolean verificarPassword(String input) {
+    public boolean verificarContrasenia(String input) {
         return contrasenia.equals(input);
     }
 

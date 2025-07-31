@@ -11,8 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 
 public class FrmLogin extends BaseFrame {
+    ManejoUsuarios manejoUsuarios = new ManejoUsuarios();
 
     public FrmLogin() {
         super("Inicio de Sesión", 400, 260);
@@ -43,28 +45,42 @@ public class FrmLogin extends BaseFrame {
         lblUsuario.setFont(lblUsuario.getFont().deriveFont(14f));
         lblUsuario.setBounds(40, 25, 150, 25);  // x, y, ancho, alto
         panelCentro.add(lblUsuario);
-        
+
         JTextField txtUsuario = new JTextField();
         txtUsuario.setBounds(190, 29, 150, 20);
         panelCentro.add(txtUsuario);
-        
+
         JLabel lblContrasenia = new JLabel("Contraseña:");
         lblContrasenia.setFont(lblUsuario.getFont().deriveFont(14f));
         lblContrasenia.setBounds(40, 60, 150, 25);
         panelCentro.add(lblContrasenia);
-        
+
         JPasswordField txtContrasenia = new JPasswordField();
         txtContrasenia.setBounds(140, 65, 200, 20);
         panelCentro.add(txtContrasenia);
-        
+
         JButton btnInicio = new JButton("Iniciar Sesión");
-        btnInicio.setBounds(40,20,140,35);
+        btnInicio.setBounds(40, 20, 140, 35);
         panelSur.add(btnInicio);
 
-        JButton btnRegresar = new JButton("Regresar");
-        btnRegresar.setBounds(200,20,140,35);
-        panelSur.add(btnRegresar);
+        JButton btnSalir = new JButton("Salir");
+        btnSalir.setBounds(200, 20, 140, 35);
+        panelSur.add(btnSalir);
+
+        btnInicio.addActionListener(e -> {
+            String contrasenia = new String(txtContrasenia.getPassword());
+            
+            if (manejoUsuarios.iniciarSesion(txtUsuario.getText(), contrasenia)){
+                JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: Usuario o contraseña incorrectos.");
+            }
+        });
         
+        btnSalir.addActionListener(e -> {
+            System.exit(0);
+        });
+
         setContentPane(panelPrincipal);
     }
 
