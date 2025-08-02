@@ -13,7 +13,7 @@ public final class Contenido extends Usuario {
 
     @Override
     public String getRol() {
-        return "Contenido";
+        return "contenido";
     }
 
     public ArrayList<Integer> getEventosCreados() {

@@ -8,6 +8,6 @@ public final class Limitado extends Usuario {
 
     @Override
     public String getRol() {
-        return "Limitado";
+        return "limitado";
     }
 }

@@ -12,7 +12,7 @@ public final class Administrador extends Usuario {
 
     @Override
     public String getRol() {
-        return "Administrador";
+        return "administrador";
     }
 
     public ArrayList<Integer> getEventosCreados() {

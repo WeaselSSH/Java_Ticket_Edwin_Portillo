@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 
 public class FrmLogin extends BaseFrame {
+
     ManejoUsuarios manejoUsuarios = new ManejoUsuarios();
 
     public FrmLogin() {
@@ -71,14 +72,34 @@ public class FrmLogin extends BaseFrame {
         //Acciones
         btnInicio.addActionListener(e -> {
             String contrasenia = new String(txtContrasenia.getPassword());
-            
-            if (manejoUsuarios.iniciarSesion(txtUsuario.getText(), contrasenia)){
-                JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso.");
+            String NombreUsuario = txtUsuario.getText();
+
+            if (manejoUsuarios.iniciarSesion(NombreUsuario, contrasenia)) {
+                Usuario usuario = manejoUsuarios.buscarUsuario(NombreUsuario);
+
+                switch (usuario.getRol().toLowerCase()) {
+                    case "administrador":
+                        FrmMenuAdmin ma = new FrmMenuAdmin();
+                        ma.setVisible(true);
+                        this.dispose();
+                        break;
+                    case "contenido":
+                        FrmMenuContenido mc = new FrmMenuContenido();
+                        mc.setVisible(true);
+                        this.dispose();
+                        break;
+                    case "limitado":
+                        FrmMenuLimitado ml = new FrmMenuLimitado();
+                        ml.setVisible(true);
+                        this.dispose();
+                        break;
+                }
+
             } else {
                 JOptionPane.showMessageDialog(null, "Error: Usuario o contraseña incorrectos.");
             }
         });
-        
+
         btnSalir.addActionListener(e -> {
             System.exit(0);
         });
