@@ -22,9 +22,10 @@ public class FrmLogin extends BaseFrame {
 
     @Override
     protected void initComponents() {
-        //creación de paneles
+        //panel principal
         JPanel panelPrincipal = new JPanel(new BorderLayout());
 
+        //resto de paneles
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         panelNorte.setPreferredSize(new Dimension(0, 40));
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
@@ -67,6 +68,7 @@ public class FrmLogin extends BaseFrame {
         btnSalir.setBounds(200, 20, 140, 35);
         panelSur.add(btnSalir);
 
+        //Acciones
         btnInicio.addActionListener(e -> {
             String contrasenia = new String(txtContrasenia.getPassword());
             
