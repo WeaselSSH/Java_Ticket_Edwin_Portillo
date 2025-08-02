@@ -10,7 +10,7 @@ public class EventoReligioso extends Evento {
     
     public EventoReligioso(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
         super(codigo, titulo, descripcion, fechaRealizar, montoRenta);
-        this.cantidadConvertidos = 0; // por defecto
+        this.cantidadConvertidos = 0; //por defecto
     }
 
     @Override
