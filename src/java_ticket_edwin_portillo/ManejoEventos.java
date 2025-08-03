@@ -14,5 +14,6 @@ public class ManejoEventos {
                             Calendar fechaRealizar, double montoRenta) {
         
         eventos.add(new EventoReligioso(codigo, titulo, descripcion, fechaRealizar, montoRenta));
+        
     }
 }

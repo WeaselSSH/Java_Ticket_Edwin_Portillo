@@ -3,7 +3,7 @@ package java_ticket_edwin_portillo;
 import java.util.ArrayList;
 
 public final class Administrador extends Usuario {
-    private ArrayList<Integer> eventosCreados;
+    private ArrayList<String> eventosCreados;
 
     public Administrador(String nombre, String usuario, String contrasenia, int edad) {
         super(nombre, usuario, contrasenia, edad);
@@ -15,15 +15,15 @@ public final class Administrador extends Usuario {
         return "administrador";
     }
 
-    public ArrayList<Integer> getEventosCreados() {
+    public ArrayList<String> getEventosCreados() {
         return eventosCreados;
     }
 
-    public void agregarEvento(Integer idEvento) {
+    public void agregarEvento(String idEvento) {
         eventosCreados.add(idEvento);
     }
 
-    public void eliminarEvento(Integer idEvento) {
+    public void eliminarEvento(String idEvento) {
         eventosCreados.remove(idEvento);
     }
 }
