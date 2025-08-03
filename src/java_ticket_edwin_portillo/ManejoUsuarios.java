@@ -3,7 +3,7 @@ package java_ticket_edwin_portillo;
 import java.util.ArrayList;
 
 public class ManejoUsuarios {
-    
+
     public static Usuario usuarioLogeado;
     private ArrayList<Usuario> usuarios;
 
@@ -47,8 +47,8 @@ public class ManejoUsuarios {
 
     public boolean iniciarSesion(String usuario, String contrasenia) {
         Usuario u = buscarUsuario(usuario);
-
         if (u != null && u.verificarContrasenia(contrasenia)) {
+            usuarioLogeado = u;
             return true;
         }
         return false;

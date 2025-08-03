@@ -1,7 +1,6 @@
 package java_ticket_edwin_portillo;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 
 public class FrmLogin extends BaseFrame {
@@ -76,7 +74,6 @@ public class FrmLogin extends BaseFrame {
 
             if (manejoUsuarios.iniciarSesion(NombreUsuario, contrasenia)) {
                 Usuario usuario = manejoUsuarios.buscarUsuario(NombreUsuario);
-                ManejoUsuarios.usuarioLogeado = usuario;
 
                 switch (usuario.getRol().toLowerCase()) {
                     case "administrador":

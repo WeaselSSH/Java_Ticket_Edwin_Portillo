@@ -5,25 +5,41 @@ import java.util.Calendar;
 
 public class ManejoEventos {
 
-    public static ArrayList<Evento> eventos;
-
-    public ManejoEventos() {
-        eventos = new ArrayList<>();
-    }
+    public static ArrayList<Evento> eventos = new ArrayList<>();
 
     public void crearEventoReligioso(Usuario usuario, String codigo, String titulo, String descripcion,
             Calendar fechaRealizar, double montoRenta) {
 
         eventos.add(new EventoReligioso(codigo, titulo, descripcion, fechaRealizar, montoRenta));
 
-        if (usuario instanceof Administrador) {
-            Administrador usuarioAdministrador = (Administrador) usuario;
-            usuarioAdministrador.agregarEvento(codigo);
-        }
+        agregarCodigoUsuario(usuario, codigo);
+    }
 
-        if (usuario instanceof Contenido) {
-            Contenido usuarioAdministrador = (Contenido) usuario;
-            usuarioAdministrador.agregarEvento(codigo);
+    public void crearEventoMusical(Usuario usuario, String codigo, String titulo, String descripcion,
+            Calendar fechaRealizar, double montoRenta, TipoMusica tipoMusica) {
+
+        EventoMusical evento = new EventoMusical(codigo, titulo, descripcion, fechaRealizar, montoRenta, tipoMusica);
+        eventos.add(evento);
+
+        agregarCodigoUsuario(usuario, codigo);
+    }
+
+    public void crearEventoDeportivo(Usuario usuario, String codigo, String titulo, String descripcion,
+            Calendar fechaRealizar, double montoRenta, String equipo1, String equipo2, TipoDeporte tipoDeporte) {
+
+        EventoDeportivo evento = new EventoDeportivo(codigo, titulo, descripcion, fechaRealizar, montoRenta,
+                equipo1, equipo2, tipoDeporte);
+        eventos.add(evento);
+
+        agregarCodigoUsuario(usuario, codigo);
+    }
+
+    private void agregarCodigoUsuario(Usuario usuario, String codigo) {
+        if (usuario instanceof Administrador) {
+            ((Administrador) usuario).agregarEvento(codigo);
+        } else if (usuario instanceof Contenido) {
+            ((Contenido) usuario).agregarEvento(codigo);
         }
     }
+
 }

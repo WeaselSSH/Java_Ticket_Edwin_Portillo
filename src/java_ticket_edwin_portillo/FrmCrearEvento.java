@@ -57,8 +57,8 @@ public class FrmCrearEvento extends BaseFrame {
 
         JTextArea txtDescripcion = new JTextArea();
         txtDescripcion.setBounds(170, 100, 200, 55);
-        txtDescripcion.setLineWrap(true); //sirve para que haga un salto de línea
-        txtDescripcion.setWrapStyleWord(true); //sirve para saltar de línea solo en palabras completas
+        txtDescripcion.setLineWrap(true); 
+        txtDescripcion.setWrapStyleWord(true); 
         panelCentro.add(txtDescripcion);
 
         JLabel lblFecha = new JLabel("Fecha del Evento:");
