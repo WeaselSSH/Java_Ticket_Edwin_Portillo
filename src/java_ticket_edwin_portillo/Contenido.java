@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public final class Contenido extends Usuario {
 
-    private ArrayList<Integer> eventosCreados;
+    private ArrayList<String> eventosCreados;
 
     public Contenido(String nombre, String usuario, String contrasenia, int edad) {
         super(nombre, usuario, contrasenia, edad);
@@ -16,15 +16,15 @@ public final class Contenido extends Usuario {
         return "contenido";
     }
 
-    public ArrayList<Integer> getEventosCreados() {
+    public ArrayList<String> getEventosCreados() {
         return eventosCreados;
     }
 
-    public void agregarEvento(Integer idEvento) {
+    public void agregarEvento(String idEvento) {
         eventosCreados.add(idEvento);
     }
 
-    public void eliminarEvento(Integer idEvento) {
+    public void eliminarEvento(String idEvento) {
         eventosCreados.remove(idEvento);
     }
 }

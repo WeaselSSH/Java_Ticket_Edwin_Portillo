@@ -109,21 +109,41 @@ public class FrmCrearEvento extends BaseFrame {
         txtEquipo2.setBounds(100, 35, 200, 25);
         panelDeportivo.add(txtEquipo2);
 
-        JLabel lblTipoDeporte = new JLabel("Tipo Deporte:");
+        JLabel lblTipoDeporte = new JLabel("Tipo de Deporte:");
         lblTipoDeporte.setBounds(0, 70, 100, 25);
         panelDeportivo.add(lblTipoDeporte);
 
         JComboBox<TipoDeporte> cboDeporte = new JComboBox<>(TipoDeporte.values());
-        cboDeporte.setBounds(100, 70, 200, 25);
+        cboDeporte.setBounds(110, 70, 190, 25);
         panelDeportivo.add(cboDeporte);
-        
-        //PANEL PARA EVENTOS MUSICALES
-        
 
-        // Muestro dinámico de los paneles por tipo de evento
+        //PANEL PARA EVENTOS MUSICALES
+        JPanel panelMusical = new JPanel(null);
+        panelMusical.setBounds(35, 350, 400, 100);
+        panelCentro.add(panelMusical);
+
+        JLabel lblTipoMusica = new JLabel("Tipo de Música:");
+        lblTipoMusica.setBounds(0, 0, 100, 25);
+        panelMusical.add(lblTipoMusica);
+
+        JComboBox<TipoMusica> cboMusica = new JComboBox<>(TipoMusica.values());
+        cboMusica.setBounds(100, 0, 200, 25);
+        panelMusical.add(cboMusica);
         
-        
-        
+        //PANEL PARA EVENTOS RELIGIOSOS (no tiene nada xd)
+        JPanel panelReligioso = new JPanel(null);
+        panelReligioso.setBounds(35, 350, 400, 1);
+        panelCentro.add(panelReligioso);
+
+        //muestreo dinámico de los paneles de evento
+        cboTipo.addActionListener(e -> {
+            String seleccionado = (String) cboTipo.getSelectedItem();
+
+            panelDeportivo.setVisible("DEPORTIVO".equals(seleccionado));
+            panelMusical.setVisible("MUSICAL".equals(seleccionado));
+            panelReligioso.setVisible("RELIGIOSO".equals(seleccionado));
+        });
+
         setContentPane(panelPrincipal);
     }
 
