@@ -36,7 +36,7 @@ public class FrmCrearEvento extends BaseFrame {
         JTextField txtCodigo = crearTextField(170, 10, 200, 25);
         txtCodigo.setEditable(false);
         txtCodigo.setFocusable(false);
-        txtCodigo.setText(manejoEventos.generarCodigo());
+        txtCodigo.setText(ManejoEventos.codigoActual());
         panelCentro.add(txtCodigo);
 
         JLabel lblTituloEvento = crearLabel("Título:", 35, 55, 140, 25, Font.BOLD, 14f);
@@ -111,9 +111,18 @@ public class FrmCrearEvento extends BaseFrame {
             panelDeportivo.setVisible("DEPORTIVO".equals(seleccionado));
             panelMusical.setVisible("MUSICAL".equals(seleccionado));
         });
+        
+        //botón salir
+        JButton btnSalir = crearBoton("Regresar", 220, 470, 140, 35);
+        panelCentro.add(btnSalir);
+        btnSalir.addActionListener(e -> {
+           FrmEventos evt = new FrmEventos();
+           evt.setVisible(true);
+           this.dispose();
+        });
 
         //botón crear y su acción
-        JButton btnCrear = crearBoton("Crear Evento", 140, 470, 160, 35);
+        JButton btnCrear = crearBoton("Crear Evento", 60, 470, 140, 35);
         panelCentro.add(btnCrear);
 
         btnCrear.addActionListener(e -> {
@@ -147,7 +156,7 @@ public class FrmCrearEvento extends BaseFrame {
                             fechaRealizar, montoRenta);
 
                     JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
-                    txtCodigo.setText(ManejoEventos.generarCodigo());
+                    txtCodigo.setText(ManejoEventos.codigoActual());
                     break;
 
                 case "MUSICAL":
@@ -157,7 +166,7 @@ public class FrmCrearEvento extends BaseFrame {
                             fechaRealizar, montoRenta, tipoMusica);
 
                     JOptionPane.showMessageDialog(this, "Evento musical creado correctamente.");
-                    txtCodigo.setText(ManejoEventos.generarCodigo());
+                    txtCodigo.setText(ManejoEventos.codigoActual());
                     break;
 
                 case "DEPORTIVO":
@@ -174,7 +183,7 @@ public class FrmCrearEvento extends BaseFrame {
                             fechaRealizar, montoRenta, equipo1, equipo2, tipoDeporte);
 
                     JOptionPane.showMessageDialog(this, "Evento deportivo creado correctamente.");
-                    txtCodigo.setText(ManejoEventos.generarCodigo());
+                    txtCodigo.setText(ManejoEventos.codigoActual());
                     break;
             }
 

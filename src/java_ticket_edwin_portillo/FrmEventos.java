@@ -43,6 +43,9 @@ public class FrmEventos extends BaseFrame {
 
         // Acciones
         btnCrear.addActionListener(e -> {
+            FrmCrearEvento ce = new FrmCrearEvento();
+            ce.setVisible(true);
+            this.dispose();
         });
 
         btnEditar.addActionListener(e -> {

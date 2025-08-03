@@ -40,6 +40,9 @@ public class FrmMenuAdmin extends BaseFrame {
 
         //Acciones
         btnEventos.addActionListener(e -> {
+            FrmEventos evt = new FrmEventos();
+            evt.setVisible(true);
+            this.dispose();
         });
 
         btnUsuarios.addActionListener(e -> {

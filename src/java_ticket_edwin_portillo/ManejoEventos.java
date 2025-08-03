@@ -7,12 +7,9 @@ public class ManejoEventos {
 
     public static ArrayList<Evento> eventos = new ArrayList<>();
     private static int contador = 0;
-    
-    public static String generarCodigo() {
-        String codigoGenerado = "EVT" + contador;
-        contador++;
-        
-        return codigoGenerado;
+
+    public static String codigoActual() {
+        return "EVT" + contador;
     }
 
     public void crearEventoReligioso(Usuario usuario, String codigo, String titulo, String descripcion,
@@ -21,6 +18,7 @@ public class ManejoEventos {
         eventos.add(new EventoReligioso(codigo, titulo, descripcion, fechaRealizar, montoRenta));
 
         agregarCodigoUsuario(usuario, codigo);
+        contador++;
     }
 
     public void crearEventoMusical(Usuario usuario, String codigo, String titulo, String descripcion,
@@ -29,6 +27,7 @@ public class ManejoEventos {
         eventos.add(new EventoMusical(codigo, titulo, descripcion, fechaRealizar, montoRenta, tipoMusica));
 
         agregarCodigoUsuario(usuario, codigo);
+        contador++;
     }
 
     public void crearEventoDeportivo(Usuario usuario, String codigo, String titulo, String descripcion,
@@ -38,6 +37,7 @@ public class ManejoEventos {
                 equipo2, tipoDeporte));
 
         agregarCodigoUsuario(usuario, codigo);
+        contador++;
     }
 
     private void agregarCodigoUsuario(Usuario usuario, String codigo) {
