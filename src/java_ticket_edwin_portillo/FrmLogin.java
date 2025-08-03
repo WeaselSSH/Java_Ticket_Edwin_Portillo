@@ -76,6 +76,7 @@ public class FrmLogin extends BaseFrame {
 
             if (manejoUsuarios.iniciarSesion(NombreUsuario, contrasenia)) {
                 Usuario usuario = manejoUsuarios.buscarUsuario(NombreUsuario);
+                ManejoUsuarios.usuarioLogeado = usuario;
 
                 switch (usuario.getRol().toLowerCase()) {
                     case "administrador":

@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 public class ManejoEventos {
 
-    private ArrayList<Evento> eventos;
+    public static ArrayList<Evento> eventos;
 
     public ManejoEventos() {
         eventos = new ArrayList<>();

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.Calendar;
 
 public class FrmCrearEvento extends BaseFrame {
+    ManejoEventos manejoEventos = new ManejoEventos();
 
     public FrmCrearEvento() {
         super("Crear Evento", 440, 640);
@@ -129,7 +130,7 @@ public class FrmCrearEvento extends BaseFrame {
         JComboBox<TipoMusica> cboMusica = new JComboBox<>(TipoMusica.values());
         cboMusica.setBounds(100, 0, 200, 25);
         panelMusical.add(cboMusica);
-        
+
         //PANEL PARA EVENTOS RELIGIOSOS (no tiene nada xd)
         JPanel panelReligioso = new JPanel(null);
         panelReligioso.setBounds(35, 350, 400, 1);
@@ -142,6 +143,58 @@ public class FrmCrearEvento extends BaseFrame {
             panelDeportivo.setVisible("DEPORTIVO".equals(seleccionado));
             panelMusical.setVisible("MUSICAL".equals(seleccionado));
             panelReligioso.setVisible("RELIGIOSO".equals(seleccionado));
+        });
+
+        //botón de crear evento
+        JButton btnCrear = new JButton("Crear Evento");
+        btnCrear.setBounds(140, 470, 160, 35);
+        panelCentro.add(btnCrear);
+
+        //acción de botón crear evento
+        btnCrear.addActionListener(e -> {
+            String codigo = txtCodigo.getText().trim();
+            String titulo = txtTituloEvento.getText().trim();
+            String descripcion = txtDescripcion.getText().trim();
+            Calendar fechaRealizar = dateChooser.getCalendar();
+            String tipo = (String) cboTipo.getSelectedItem();
+            String montoTexto = txtMontoRenta.getText().trim();
+
+            if (codigo.isEmpty() || titulo.isEmpty() || descripcion.isEmpty()
+                    || fechaRealizar == null || montoTexto.isEmpty()) {
+
+                JOptionPane.showMessageDialog(this, "Error: todos los campos generales deben estar llenos.");
+                return;
+            }
+
+            double montoRenta;
+
+            try {
+                montoRenta = Double.parseDouble(montoTexto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Monto de renta inválido.");
+                return;
+            }
+
+            switch (tipo) {
+                case "RELIGIOSO":
+                    manejoEventos.crearEventoReligioso(ManejoUsuarios.usuarioLogeado, codigo, titulo, descripcion,
+                            fechaRealizar, montoRenta);
+                    
+                    JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
+                    break;
+
+                case "MUSICAL":
+                    JOptionPane.showMessageDialog(this, "La lógica para evento MUSICAL aún no está implementada.");
+                    break;
+
+                case "DEPORTIVO":
+                    JOptionPane.showMessageDialog(this, "La lógica para evento DEPORTIVO aún no está implementada.");
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(this, "Tipo de evento inválido.");
+            }
+
         });
 
         setContentPane(panelPrincipal);

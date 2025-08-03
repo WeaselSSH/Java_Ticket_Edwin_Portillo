@@ -3,7 +3,8 @@ package java_ticket_edwin_portillo;
 import java.util.ArrayList;
 
 public class ManejoUsuarios {
-
+    
+    public static Usuario usuarioLogeado;
     private ArrayList<Usuario> usuarios;
 
     public ManejoUsuarios() {
