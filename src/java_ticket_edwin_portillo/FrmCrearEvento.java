@@ -8,7 +8,7 @@ import java.util.Calendar;
 public class FrmCrearEvento extends BaseFrame {
 
     public FrmCrearEvento() {
-        super("Crear Evento", 480, 600);
+        super("Crear Evento", 440, 640);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class FrmCrearEvento extends BaseFrame {
         JPanel panelCentro = new JPanel(null);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
-        //resto de ui
+        //UI GENERAL
         JLabel lblTitulo = new JLabel("CREAR EVENTO");
         lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.BOLD, 20f));
         panelNorte.add(lblTitulo);
@@ -80,15 +80,50 @@ public class FrmCrearEvento extends BaseFrame {
 
         JLabel lblTipo = new JLabel("Tipo de Evento:");
         lblTipo.setFont(lblTipo.getFont().deriveFont(Font.BOLD, 14f));
-        lblTipo.setBounds(35, 280, 200, 25);
+        lblTipo.setBounds(35, 300, 200, 25);
         panelCentro.add(lblTipo);
 
-        String tipoEvento[] = {"Deportivo", "Musical", "Religioso"};
+        String tipoEvento[] = {"DEPORTIVO", "MUSICAL", "RELIGIOSO"};
         JComboBox<String> cboTipo = new JComboBox<>(tipoEvento);
-        cboTipo.setBounds(170, 280, 200, 25);
+        cboTipo.setBounds(170, 300, 200, 25);
         panelCentro.add(cboTipo);
 
+        //PANEL PARA EVENTOS DEPORTIVOS
+        JPanel panelDeportivo = new JPanel(null);
+        panelDeportivo.setBounds(35, 350, 400, 100);
+        panelCentro.add(panelDeportivo);
 
+        JLabel lblEquipo1 = new JLabel("Equipo 1:");
+        lblEquipo1.setBounds(0, 0, 100, 25);
+        panelDeportivo.add(lblEquipo1);
+
+        JTextField txtEquipo1 = new JTextField();
+        txtEquipo1.setBounds(100, 0, 200, 25);
+        panelDeportivo.add(txtEquipo1);
+
+        JLabel lblEquipo2 = new JLabel("Equipo 2:");
+        lblEquipo2.setBounds(0, 35, 100, 25);
+        panelDeportivo.add(lblEquipo2);
+
+        JTextField txtEquipo2 = new JTextField();
+        txtEquipo2.setBounds(100, 35, 200, 25);
+        panelDeportivo.add(txtEquipo2);
+
+        JLabel lblTipoDeporte = new JLabel("Tipo Deporte:");
+        lblTipoDeporte.setBounds(0, 70, 100, 25);
+        panelDeportivo.add(lblTipoDeporte);
+
+        JComboBox<TipoDeporte> cboDeporte = new JComboBox<>(TipoDeporte.values());
+        cboDeporte.setBounds(100, 70, 200, 25);
+        panelDeportivo.add(cboDeporte);
+        
+        //PANEL PARA EVENTOS MUSICALES
+        
+
+        // Muestro dinámico de los paneles por tipo de evento
+        
+        
+        
         setContentPane(panelPrincipal);
     }
 
