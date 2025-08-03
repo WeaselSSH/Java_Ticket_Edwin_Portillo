@@ -11,6 +11,7 @@ public abstract class Evento {
     protected double montoRenta;
     protected boolean cancelado = false;
     protected boolean realizado = false;
+    protected double multa = 0;
 
     public Evento(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
         this.codigo = codigo;
@@ -22,11 +23,35 @@ public abstract class Evento {
 
     public abstract String getTipo();
 
-    public boolean getCancelado() {
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public Calendar getFechaRealizar() {
+        return fechaRealizar;
+    }
+
+    public double getMontoRenta() {
+        return montoRenta;
+    }
+
+    public boolean Cancelado() {
         return cancelado;
     }
 
-    public boolean getRealizado() {
+    public void setCancelado() {
+        cancelado = true;
+    }
+
+    public boolean Realizado() {
         return realizado;
     }
 
@@ -36,6 +61,14 @@ public abstract class Evento {
 
     public void cancelar() {
         this.cancelado = true;
+    }
+
+    public void setMulta(double multa) {
+        this.multa = multa;
+    }
+
+    public double getMulta() {
+        return multa;
     }
 
 }

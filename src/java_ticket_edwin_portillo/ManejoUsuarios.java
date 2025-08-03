@@ -5,10 +5,9 @@ import java.util.ArrayList;
 public class ManejoUsuarios {
 
     public static Usuario usuarioLogeado;
-    private ArrayList<Usuario> usuarios;
+    public static ArrayList<Usuario> usuarios = new ArrayList<>();
 
     public ManejoUsuarios() {
-        usuarios = new ArrayList<>();
         Usuario admin = new Administrador("Admin Default", "admin", "supersecreto", 30);
         usuarios.add(admin);
     }

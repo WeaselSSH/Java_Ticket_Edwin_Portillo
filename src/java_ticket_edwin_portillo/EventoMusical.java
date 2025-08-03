@@ -7,6 +7,7 @@ public class EventoMusical extends Evento {
 
     private TipoMusica tipoMusica;
     private ArrayList<String> staffTecnico;
+    private double seguro;
 
     public static final int cantidadMaxima = 25000;
     public static final double porcentajeSeguro = 0.30;
@@ -17,6 +18,7 @@ public class EventoMusical extends Evento {
         super(codigo, titulo, descripcion, fechaRealizar, montoRenta);
         this.tipoMusica = tipoMusica;
         staffTecnico = new ArrayList<>();
+        this.seguro = montoRenta * porcentajeSeguro;
     }
 
     @Override
@@ -26,5 +28,9 @@ public class EventoMusical extends Evento {
 
     public void agregarStaff(String nombre) {
         staffTecnico.add(nombre);
+    }
+    
+    public double getSeguro() {
+        return seguro;
     }
 }
