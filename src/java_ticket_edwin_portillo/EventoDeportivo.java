@@ -14,7 +14,7 @@ public class EventoDeportivo extends Evento {
     public static final int cantidadMaxima = 20000;
 
     public EventoDeportivo(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta,
-                           String equipo1, String equipo2, TipoDeporte tipo) {
+            String equipo1, String equipo2, TipoDeporte tipo) {
         
         super(codigo, titulo, descripcion, fechaRealizar, montoRenta);
         this.equipo1 = equipo1;

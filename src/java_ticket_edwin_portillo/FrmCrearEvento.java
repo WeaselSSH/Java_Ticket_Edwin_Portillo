@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.Calendar;
 
 public class FrmCrearEvento extends BaseFrame {
+
     ManejoEventos manejoEventos = new ManejoEventos();
 
     public FrmCrearEvento() {
@@ -14,10 +15,10 @@ public class FrmCrearEvento extends BaseFrame {
 
     @Override
     protected void initComponents() {
-        
+
         //PANELES
         JPanel panelPrincipal = new JPanel(new BorderLayout());
-        
+
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         panelNorte.setPreferredSize(new Dimension(0, 60));
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
@@ -35,6 +36,7 @@ public class FrmCrearEvento extends BaseFrame {
         JTextField txtCodigo = crearTextField(170, 10, 200, 25);
         txtCodigo.setEditable(false);
         txtCodigo.setFocusable(false);
+        txtCodigo.setText(manejoEventos.generarCodigo());
         panelCentro.add(txtCodigo);
 
         JLabel lblTituloEvento = crearLabel("Título:", 35, 55, 140, 25, Font.BOLD, 14f);
@@ -76,19 +78,19 @@ public class FrmCrearEvento extends BaseFrame {
 
         JLabel lblEquipo1 = crearLabel("Equipo 1:", 0, 0, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblEquipo1);
-        
+
         JTextField txtEquipo1 = crearTextField(100, 0, 200, 25);
         panelDeportivo.add(txtEquipo1);
 
         JLabel lblEquipo2 = crearLabel("Equipo 2:", 0, 35, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblEquipo2);
-        
+
         JTextField txtEquipo2 = crearTextField(100, 35, 200, 25);
         panelDeportivo.add(txtEquipo2);
 
         JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 70, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblTipoDeporte);
-        
+
         JComboBox<TipoDeporte> cboDeporte = crearComboBox(TipoDeporte.values(), 110, 70, 190, 25);
         panelDeportivo.add(cboDeporte);
 
@@ -99,7 +101,7 @@ public class FrmCrearEvento extends BaseFrame {
 
         JLabel lblTipoMusica = crearLabel("Tipo de Música:", 0, 0, 100, 25, Font.BOLD, 12f);
         panelMusical.add(lblTipoMusica);
-        
+
         JComboBox<TipoMusica> cboMusica = crearComboBox(TipoMusica.values(), 100, 0, 200, 25);
         panelMusical.add(cboMusica);
 
@@ -118,9 +120,11 @@ public class FrmCrearEvento extends BaseFrame {
             String codigo = txtCodigo.getText().trim();
             String titulo = txtTituloEvento.getText().trim();
             String descripcion = txtDescripcion.getText().trim();
-            Calendar fechaRealizar = dateChooser.getCalendar();
+            Calendar fechaRealizar;
             String tipo = (String) cboTipo.getSelectedItem();
             String montoTexto = txtMontoRenta.getText().trim();
+            fechaRealizar = dateChooser.getCalendar();
+            double montoRenta;
 
             if (codigo.isEmpty() || titulo.isEmpty() || descripcion.isEmpty()
                     || fechaRealizar == null || montoTexto.isEmpty()) {
@@ -128,27 +132,52 @@ public class FrmCrearEvento extends BaseFrame {
                 return;
             }
 
-            double montoRenta;
+            //en caso que ingrese algo que no sea números
             try {
                 montoRenta = Double.parseDouble(montoTexto);
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Monto de renta inválido.");
+                JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
                 return;
             }
 
+            //creación de eventos
             switch (tipo) {
                 case "RELIGIOSO":
                     manejoEventos.crearEventoReligioso(ManejoUsuarios.usuarioLogeado, codigo, titulo, descripcion,
                             fechaRealizar, montoRenta);
+
                     JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
+                    txtCodigo.setText(ManejoEventos.generarCodigo());
                     break;
+
                 case "MUSICAL":
+                    TipoMusica tipoMusica = (TipoMusica) cboMusica.getSelectedItem();
+
+                    manejoEventos.crearEventoMusical(ManejoUsuarios.usuarioLogeado, codigo, titulo, descripcion,
+                            fechaRealizar, montoRenta, tipoMusica);
+
+                    JOptionPane.showMessageDialog(this, "Evento musical creado correctamente.");
+                    txtCodigo.setText(ManejoEventos.generarCodigo());
                     break;
+
                 case "DEPORTIVO":
+                    String equipo1 = txtEquipo1.getText().trim();
+                    String equipo2 = txtEquipo2.getText().trim();
+                    TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
+
+                    if (equipo1.isEmpty() || equipo2.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Error: debe ingresar ambos equipos.");
+                        return;
+                    }
+
+                    manejoEventos.crearEventoDeportivo(ManejoUsuarios.usuarioLogeado, codigo, titulo, descripcion,
+                            fechaRealizar, montoRenta, equipo1, equipo2, tipoDeporte);
+
+                    JOptionPane.showMessageDialog(this, "Evento deportivo creado correctamente.");
+                    txtCodigo.setText(ManejoEventos.generarCodigo());
                     break;
-                default:
-                    JOptionPane.showMessageDialog(this, "Tipo de evento inválido.");
             }
+
         });
 
         setContentPane(panelPrincipal);
