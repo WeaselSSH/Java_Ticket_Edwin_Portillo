@@ -27,7 +27,7 @@ public abstract class BaseFrame extends JFrame {
         return label;
     }
 
-    protected JTextField crearTxtField(int x, int y, int ancho, int alto) {
+    protected JTextField crearTextField(int x, int y, int ancho, int alto) {
         JTextField textField = new JTextField();
         textField.setBounds(x, y, ancho, alto);
         return textField;

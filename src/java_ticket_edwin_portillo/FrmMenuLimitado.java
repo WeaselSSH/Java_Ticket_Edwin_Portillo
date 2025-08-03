@@ -23,20 +23,16 @@ public class FrmMenuLimitado extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de UI 
-        JLabel lblTitulo = new JLabel("MENU USUARIO LIMITADO");
-        lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.BOLD, 18f));
+        JLabel lblTitulo = crearLabel("MENU USUARIO LIMITADO", 0, 0, 0, 0, Font.BOLD, 18f);
         panelNorte.add(lblTitulo);
-        
-        JButton btnVerEventos = new JButton("Ver Eventos");
-        btnVerEventos.setBounds(82, 0, 245, 40);
+
+        JButton btnVerEventos = crearBoton("Ver Eventos", 82, 0, 245, 40);
         panelCentro.add(btnVerEventos);
 
-        JButton btnReportes = new JButton("Ver Reportes");
-        btnReportes.setBounds(82, 60, 245, 40);
+        JButton btnReportes = crearBoton("Ver Reportes", 82, 60, 245, 40);
         panelCentro.add(btnReportes);
 
-        JButton btnSalir = new JButton("Salir");
-        btnSalir.setBounds(82, 120, 245, 40);
+        JButton btnSalir = crearBoton("Salir", 82, 120, 245, 40);
         panelCentro.add(btnSalir);
 
         // Acciones

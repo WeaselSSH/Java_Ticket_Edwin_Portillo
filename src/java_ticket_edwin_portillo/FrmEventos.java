@@ -23,28 +23,22 @@ public class FrmEventos extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de ui
-        JLabel lblTitulo = new JLabel("ADMINISTRACIÓN DE EVENTOS");
-        lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.BOLD, 18f));
+        JLabel lblTitulo = crearLabel("ADMINISTRACIÓN DE EVENTOS", 0, 0, 0, 0, Font.BOLD, 18f);
         panelNorte.add(lblTitulo);
 
-        JButton btnCrear = new JButton("Crear Evento");
-        btnCrear.setBounds(82, 0, 245, 40);
+        JButton btnCrear = crearBoton("Crear Evento", 82, 0, 245, 40);
         panelCentro.add(btnCrear);
 
-        JButton btnEditar = new JButton("Editar Evento");
-        btnEditar.setBounds(82, 60, 245, 40);
+        JButton btnEditar = crearBoton("Editar Evento", 82, 60, 245, 40);
         panelCentro.add(btnEditar);
 
-        JButton btnEliminar = new JButton("Eliminar Evento");
-        btnEliminar.setBounds(82, 120, 245, 40);
+        JButton btnEliminar = crearBoton("Eliminar Evento", 82, 120, 245, 40);
         panelCentro.add(btnEliminar);
 
-        JButton btnVer = new JButton("Ver Evento");
-        btnVer.setBounds(82, 180, 245, 40);
+        JButton btnVer = crearBoton("Ver Evento", 82, 180, 245, 40);
         panelCentro.add(btnVer);
 
-        JButton btnRegresar = new JButton("Regresar");
-        btnRegresar.setBounds(82, 240, 245, 40);
+        JButton btnRegresar = crearBoton("Regresar", 82, 240, 245, 40);
         panelCentro.add(btnRegresar);
 
         // Acciones

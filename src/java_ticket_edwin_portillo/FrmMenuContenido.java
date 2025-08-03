@@ -23,20 +23,16 @@ public class FrmMenuContenido extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de ui
-        JLabel lblTitulo = new JLabel("MENU USUARIO CONTENIDO");
-        lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.BOLD, 18f));
+        JLabel lblTitulo = crearLabel("MENU USUARIO CONTENIDO", 0, 0, 0, 0, Font.BOLD, 18f);
         panelNorte.add(lblTitulo);
 
-        JButton btnEventos = new JButton("Administrar Eventos");
-        btnEventos.setBounds(82, 0, 245, 40);
+        JButton btnEventos = crearBoton("Administrar Eventos", 82, 0, 245, 40);
         panelCentro.add(btnEventos);
 
-        JButton btnReportes = new JButton("Ver Reportes");
-        btnReportes.setBounds(82, 60, 245, 40);
+        JButton btnReportes = crearBoton("Ver Reportes", 82, 60, 245, 40);
         panelCentro.add(btnReportes);
 
-        JButton btnSalir = new JButton("Salir");
-        btnSalir.setBounds(82, 120, 245, 40);
+        JButton btnSalir = crearBoton("Salir", 82, 120, 245, 40);
         panelCentro.add(btnSalir);
 
         // Acciones

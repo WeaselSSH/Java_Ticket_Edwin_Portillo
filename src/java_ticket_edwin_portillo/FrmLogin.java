@@ -37,34 +37,26 @@ public class FrmLogin extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de UI
-        JLabel lblTitulo = new JLabel("INICIO DE SESION");
-        lblTitulo.setFont(lblTitulo.getFont().deriveFont(Font.BOLD, 24f));
+         JLabel lblTitulo = crearLabel("INICIO DE SESION", 0, 0, 0, 0, Font.BOLD, 24f);
         panelNorte.add(lblTitulo);
 
-        JLabel lblUsuario = new JLabel("Nombre de Usuario:");
-        lblUsuario.setFont(lblUsuario.getFont().deriveFont(14f));
-        lblUsuario.setBounds(40, 25, 150, 25);  // x, y, ancho, alto
+        JLabel lblUsuario = crearLabel("Nombre de Usuario:", 40, 25, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblUsuario);
 
-        JTextField txtUsuario = new JTextField();
-        txtUsuario.setBounds(190, 29, 150, 20);
+        JTextField txtUsuario = crearTextField(190, 29, 150, 20);
         panelCentro.add(txtUsuario);
 
-        JLabel lblContrasenia = new JLabel("Contraseña:");
-        lblContrasenia.setFont(lblUsuario.getFont().deriveFont(14f));
-        lblContrasenia.setBounds(40, 60, 150, 25);
+        JLabel lblContrasenia = crearLabel("Contraseña:", 40, 60, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblContrasenia);
 
         JPasswordField txtContrasenia = new JPasswordField();
         txtContrasenia.setBounds(140, 65, 200, 20);
         panelCentro.add(txtContrasenia);
 
-        JButton btnInicio = new JButton("Iniciar Sesión");
-        btnInicio.setBounds(40, 20, 140, 35);
+        JButton btnInicio = crearBoton("Iniciar Sesión", 40, 20, 140, 35);
         panelSur.add(btnInicio);
 
-        JButton btnSalir = new JButton("Salir");
-        btnSalir.setBounds(200, 20, 140, 35);
+        JButton btnSalir = crearBoton("Salir", 200, 20, 140, 35);
         panelSur.add(btnSalir);
 
         //Acciones
