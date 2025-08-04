@@ -1,4 +1,4 @@
-package java_ticket_edwin_portillo;
+package Tipos;
 
 public enum TipoDeporte {
     FUTBOL, TENIS, RUGBY, BASEBALL;

@@ -1,5 +1,7 @@
 package java_ticket_edwin_portillo;
 
+import Tipos.TipoMusica;
+import Tipos.TipoDeporte;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import java.awt.*;

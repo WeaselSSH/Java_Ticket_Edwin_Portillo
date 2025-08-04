@@ -1,7 +1,9 @@
-package java_ticket_edwin_portillo;
+package Eventos;
 
+import Eventos.Evento;
 import java.util.ArrayList;
 import java.util.Calendar;
+import Tipos.TipoDeporte;
 
 public class EventoDeportivo extends Evento {
 

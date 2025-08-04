@@ -1,5 +1,9 @@
 package java_ticket_edwin_portillo;
 
+import Usuarios.Limitado;
+import Usuarios.Contenido;
+import Usuarios.Administrador;
+import Usuarios.Usuario;
 import java.util.ArrayList;
 
 public class ManejoUsuarios {

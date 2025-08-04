@@ -1,18 +1,20 @@
-package java_ticket_edwin_portillo;
+package Usuarios;
 
+import Usuarios.Usuario;
 import java.util.ArrayList;
 
-public final class Administrador extends Usuario {
+public final class Contenido extends Usuario {
+
     private ArrayList<String> eventosCreados;
 
-    public Administrador(String nombre, String usuario, String contrasenia, int edad) {
+    public Contenido(String nombre, String usuario, String contrasenia, int edad) {
         super(nombre, usuario, contrasenia, edad);
         this.eventosCreados = new ArrayList<>();
     }
 
     @Override
     public String getRol() {
-        return "administrador";
+        return "contenido";
     }
 
     public ArrayList<String> getEventosCreados() {

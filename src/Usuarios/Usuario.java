@@ -1,4 +1,4 @@
-package java_ticket_edwin_portillo;
+package Usuarios;
 
 public abstract class Usuario {
 

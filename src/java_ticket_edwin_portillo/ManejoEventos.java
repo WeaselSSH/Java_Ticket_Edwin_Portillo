@@ -1,5 +1,14 @@
 package java_ticket_edwin_portillo;
 
+import Tipos.TipoMusica;
+import Tipos.TipoDeporte;
+import Eventos.EventoReligioso;
+import Eventos.EventoMusical;
+import Eventos.EventoDeportivo;
+import Eventos.Evento;
+import Usuarios.Contenido;
+import Usuarios.Administrador;
+import Usuarios.Usuario;
 import java.util.ArrayList;
 import java.util.Calendar;
 

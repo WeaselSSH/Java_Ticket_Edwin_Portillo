@@ -1,4 +1,4 @@
-package java_ticket_edwin_portillo;
+package Tipos;
 
 public enum TipoMusica {
     POP, ROCK, RAP, CLASICA, REGGEATON, OTRO;

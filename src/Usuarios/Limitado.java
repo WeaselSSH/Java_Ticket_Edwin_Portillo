@@ -1,4 +1,6 @@
-package java_ticket_edwin_portillo;
+package Usuarios;
+
+import Usuarios.Usuario;
 
 public final class Limitado extends Usuario {
 

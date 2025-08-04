@@ -1,5 +1,6 @@
-package java_ticket_edwin_portillo;
+package Eventos;
 
+import Eventos.Evento;
 import java.util.Calendar;
 
 public class EventoReligioso extends Evento {
