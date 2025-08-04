@@ -46,13 +46,18 @@ public class FrmMenuAdmin extends BaseFrame {
         });
 
         btnUsuarios.addActionListener(e -> {
+            FrmUsuarios u = new FrmUsuarios();
+            u.setVisible(true);
+            this.dispose();
         });
 
         btnReportes.addActionListener(e -> {
         });
 
         btnSalir.addActionListener(e -> {
-            System.exit(0);
+            FrmLogin login = new FrmLogin();
+            login.setVisible(true);
+            this.dispose();
         });
 
         setContentPane(panelPrincipal);

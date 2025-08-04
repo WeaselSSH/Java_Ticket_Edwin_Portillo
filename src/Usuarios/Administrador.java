@@ -1,6 +1,5 @@
 package Usuarios;
 
-import Usuarios.Usuario;
 import java.util.ArrayList;
 
 public final class Administrador extends Usuario {

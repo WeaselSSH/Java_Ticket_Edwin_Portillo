@@ -85,4 +85,18 @@ public class ManejoUsuarios {
         return false;
     }
 
+    public boolean editarUsuario(String usuarioEvaluar, String nuevoNombre, String nuevaContrasenia, int nuevaEdad) {
+        Usuario u = buscarUsuario(usuarioEvaluar);
+        if (u != null) {
+            if (!contraseniaValida(nuevaContrasenia)) {
+                return false;
+            }
+            u.setNombre(nuevoNombre);
+            u.setContrasenia(nuevaContrasenia);
+            u.setEdad(nuevaEdad);
+            return true;
+        }
+        return false;
+    }
+
 }

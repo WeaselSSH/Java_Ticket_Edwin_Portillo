@@ -1,7 +1,5 @@
 package Usuarios;
 
-import Usuarios.Usuario;
-
 public final class Limitado extends Usuario {
 
     public Limitado(String nombre, String usuario, String contrasenia, int edad) {

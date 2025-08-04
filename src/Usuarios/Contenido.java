@@ -1,6 +1,5 @@
 package Usuarios;
 
-import Usuarios.Usuario;
 import java.util.ArrayList;
 
 public final class Contenido extends Usuario {
