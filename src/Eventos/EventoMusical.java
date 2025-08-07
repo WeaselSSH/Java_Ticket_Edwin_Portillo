@@ -28,10 +28,15 @@ public class EventoMusical extends Evento {
         return "Musical";
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "\nTipo de Música: " + tipoMusica;
+    }
+
     public void agregarStaff(String nombre) {
         staffTecnico.add(nombre);
     }
-    
+
     public double getSeguro() {
         return seguro;
     }

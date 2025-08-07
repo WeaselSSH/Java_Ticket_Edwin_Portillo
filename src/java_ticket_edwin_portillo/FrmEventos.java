@@ -56,10 +56,23 @@ public class FrmEventos extends BaseFrame {
         });
 
         btnVer.addActionListener(e -> {
+            new FrmVerEvento().setVisible(true);
         });
 
         btnRegresar.addActionListener(e -> {
-            this.dispose();
+            if (ManejoUsuarios.usuarioLogeado.getRol().equalsIgnoreCase("administrador")) {
+                FrmMenuAdmin ma = new FrmMenuAdmin();
+                ma.setVisible(true);
+                this.dispose();
+            }else if (ManejoUsuarios.usuarioLogeado.getRol().equalsIgnoreCase("contenido")) {
+                FrmMenuContenido mc = new FrmMenuContenido();
+                mc.setVisible(true);
+                this.dispose();
+            } else {
+                FrmMenuLimitado ml = new FrmMenuLimitado();
+                ml.setVisible(true);
+                this.dispose();
+            }
         });
 
         setContentPane(panelPrincipal);

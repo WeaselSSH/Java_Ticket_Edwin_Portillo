@@ -64,11 +64,16 @@ public class ManejoEventos {
         agregarCodigoUsuario(usuario, codigo);
     }
 
-    private void agregarCodigoUsuario(Usuario usuario, String codigo) {
+    public void agregarCodigoUsuario(Usuario usuario, String codigo) {
         if (usuario instanceof Administrador) {
             ((Administrador) usuario).agregarEvento(codigo);
         } else if (usuario instanceof Contenido) {
             ((Contenido) usuario).agregarEvento(codigo);
         }
+    }
+    
+    public String verDatos(String codigo) {
+        Evento eventoVer = buscarEvento(codigo);
+        return eventoVer.toString();
     }
 }

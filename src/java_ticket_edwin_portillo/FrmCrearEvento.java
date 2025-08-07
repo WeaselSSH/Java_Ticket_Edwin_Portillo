@@ -106,9 +106,10 @@ public class FrmCrearEvento extends BaseFrame {
         });
 
         //botón salir
-        JButton btnSalir = crearBoton("Regresar", 220, 450, 140, 35);
-        panelCentro.add(btnSalir);
-        btnSalir.addActionListener(e -> {
+        JButton btnRegresar = crearBoton("Regresar", 220, 450, 140, 35);
+        panelCentro.add(btnRegresar);
+
+        btnRegresar.addActionListener(e -> {
             FrmEventos evt = new FrmEventos();
             evt.setVisible(true);
             this.dispose();

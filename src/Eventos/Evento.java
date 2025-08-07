@@ -12,7 +12,7 @@ public abstract class Evento {
     protected boolean cancelado = false;
     protected boolean realizado = false;
     protected double multa = 0;
-    
+
     protected boolean eliminado = false;
 
     public Evento(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
@@ -68,13 +68,25 @@ public abstract class Evento {
     public double getMulta() {
         return multa;
     }
-    
+
     public void setEliminado() {
         eliminado = true;
     }
-    
+
     public boolean getEliminado() {
         return eliminado;
+    }
+
+    @Override
+    public String toString() {
+        return "Código: " + codigo
+                + "\nTítulo: " + titulo
+                + "\nDescripción: " + descripcion
+                + "\nFecha: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(fechaRealizar.getTime())
+                + "\nMonto de Renta: L." + montoRenta
+                + "\nTipo: " + getTipo()
+                + (cancelado ? "\n Evento Cancelado" : "")
+                + (multa > 0 ? "\n? Multa pagada: L." + multa : "");
     }
 
 }
