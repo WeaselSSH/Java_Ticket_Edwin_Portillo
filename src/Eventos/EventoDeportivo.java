@@ -10,7 +10,6 @@ public class EventoDeportivo extends Evento {
     private TipoDeporte tipoDeporte;
     private String equipo1;
     private String equipo2;
-    private TipoDeporte tipo;
     private final ArrayList<String> jugadoresEquipo1;
     private final ArrayList<String> jugadoresEquipo2;
 
@@ -22,7 +21,7 @@ public class EventoDeportivo extends Evento {
         super(codigo, titulo, descripcion, fechaRealizar, montoRenta);
         this.equipo1 = equipo1;
         this.equipo2 = equipo2;
-        this.tipo = tipo;
+        this.tipoDeporte = tipo;
         this.jugadoresEquipo1 = new ArrayList<>();
         this.jugadoresEquipo2 = new ArrayList<>();
     }

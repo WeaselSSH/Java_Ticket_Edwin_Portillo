@@ -12,7 +12,7 @@ public class FrmCrearEvento extends BaseFrame {
     ManejoEventos manejoEventos = new ManejoEventos();
 
     public FrmCrearEvento() {
-        super("Crear Evento", 440, 620);
+        super("Crear Evento", 440, 560);
     }
 
     @Override
@@ -32,36 +32,45 @@ public class FrmCrearEvento extends BaseFrame {
         JLabel lblTitulo = crearLabel("CREAR EVENTO", 0, 0, 300, 40, Font.BOLD, 20f);
         panelNorte.add(lblTitulo);
 
-        JLabel lblTituloEvento = crearLabel("Título:", 35, 10, 140, 25, Font.BOLD, 14f);
+        JLabel lblCodigo = crearLabel("ID Evento:", 35, 0, 140, 25, Font.BOLD, 14f);
+        panelCentro.add(lblCodigo);
+
+        JTextField txtCodigo = crearTextField(170, 0, 200, 25);
+        txtCodigo.setEditable(false);
+        txtCodigo.setFocusable(false);
+        txtCodigo.setText(ManejoEventos.codigoSiguiente());
+        panelCentro.add(txtCodigo);
+
+        JLabel lblTituloEvento = crearLabel("Título:", 35, 35, 140, 25, Font.BOLD, 14f);
         panelCentro.add(lblTituloEvento);
 
-        JTextField txtTituloEvento = crearTextField(170, 10, 200, 25);
+        JTextField txtTituloEvento = crearTextField(170, 35, 200, 25);
         panelCentro.add(txtTituloEvento);
 
-        JLabel lblDescripcion = crearLabel("Descripción:", 35, 55, 210, 25, Font.BOLD, 14f);
+        JLabel lblDescripcion = crearLabel("Descripción:", 35, 75, 210, 25, Font.BOLD, 14f);
         panelCentro.add(lblDescripcion);
 
-        JTextArea txtDescripcion = crearTextArea(170, 55, 200, 55);
+        JTextArea txtDescripcion = crearTextArea(170, 75, 200, 55);
         panelCentro.add(txtDescripcion);
 
-        JLabel lblFecha = crearLabel("Fecha del Evento:", 35, 130, 150, 25, Font.BOLD, 14f);
+        JLabel lblFecha = crearLabel("Fecha del Evento:", 35, 150, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblFecha);
 
         JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setBounds(170, 130, 200, 25);
+        dateChooser.setBounds(170, 150, 200, 25);
         panelCentro.add(dateChooser);
 
-        JLabel lblMontoRenta = crearLabel("Monto de Renta:", 35, 175, 150, 25, Font.BOLD, 14f);
+        JLabel lblMontoRenta = crearLabel("Monto de Renta:", 35, 195, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblMontoRenta);
 
-        JTextField txtMontoRenta = crearTextField(170, 175, 200, 25);
+        JTextField txtMontoRenta = crearTextField(170, 195, 200, 25);
         panelCentro.add(txtMontoRenta);
 
-        JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 240, 200, 25, Font.BOLD, 14f);
+        JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 250, 200, 25, Font.BOLD, 14f);
         panelCentro.add(lblTipo);
 
         String tipoEvento[] = {"DEPORTIVO", "MUSICAL", "RELIGIOSO"};
-        JComboBox<String> cboTipo = crearComboBox(tipoEvento, 170, 240, 200, 25);
+        JComboBox<String> cboTipo = crearComboBox(tipoEvento, 170, 250, 200, 25);
         panelCentro.add(cboTipo);
 
         //PANEL DEPORTIVO
@@ -106,7 +115,7 @@ public class FrmCrearEvento extends BaseFrame {
         });
 
         //botón salir
-        JButton btnRegresar = crearBoton("Regresar", 220, 450, 140, 35);
+        JButton btnRegresar = crearBoton("Regresar", 220, 410, 140, 35);
         panelCentro.add(btnRegresar);
 
         btnRegresar.addActionListener(e -> {
@@ -116,7 +125,7 @@ public class FrmCrearEvento extends BaseFrame {
         });
 
         //botón crear
-        JButton btnCrear = crearBoton("Crear Evento", 60, 450, 140, 35);
+        JButton btnCrear = crearBoton("Crear Evento", 60, 410, 140, 35);
         panelCentro.add(btnCrear);
 
         btnCrear.addActionListener(e -> {
@@ -127,7 +136,7 @@ public class FrmCrearEvento extends BaseFrame {
             String montoTexto = txtMontoRenta.getText().trim();
             double montoRenta;
 
-            if (titulo.isEmpty() || descripcion.isEmpty() || fechaRealizar == null || montoTexto.isEmpty()) {
+            if (titulo.isEmpty() || fechaRealizar == null || montoTexto.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Error: todos los campos generales deben estar llenos.");
                 return;
             }
@@ -136,6 +145,11 @@ public class FrmCrearEvento extends BaseFrame {
                 montoRenta = Double.parseDouble(montoTexto);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
+                return;
+            }
+            
+            if(montoRenta < 0) {
+                JOptionPane.showMessageDialog(this, "Error: monto de renta no puede ser negativo");
                 return;
             }
 
@@ -156,6 +170,12 @@ public class FrmCrearEvento extends BaseFrame {
                 case "DEPORTIVO":
                     String equipo1 = txtEquipo1.getText().trim();
                     String equipo2 = txtEquipo2.getText().trim();
+                    
+                    if (equipo1.equalsIgnoreCase(equipo2)) {
+                        JOptionPane.showMessageDialog(this, "Error: ambos equipos son iguales.");
+                        return;
+                    }
+                    
                     TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
 
                     if (equipo1.isEmpty() || equipo2.isEmpty()) {

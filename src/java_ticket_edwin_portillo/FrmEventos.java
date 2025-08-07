@@ -53,10 +53,12 @@ public class FrmEventos extends BaseFrame {
 
         btnEliminar.addActionListener(e -> {
             new FrmEliminarEvento().setVisible(true);
+            this.dispose();
         });
 
         btnVer.addActionListener(e -> {
             new FrmVerEvento().setVisible(true);
+            this.dispose();
         });
 
         btnRegresar.addActionListener(e -> {

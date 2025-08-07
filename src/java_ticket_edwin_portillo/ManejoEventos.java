@@ -21,9 +21,13 @@ public class ManejoEventos {
         return "EVT" + (contador++);
     }
 
+    public static String codigoSiguiente() {
+        return "EVT" + contador;
+    }
+
     public Evento buscarEvento(String idEvento) {
         for (Evento evt : eventos) {
-            if (evt.getCodigo().equals(idEvento) && !evt.getEliminado()) {
+            if (evt.getCodigo().equalsIgnoreCase(idEvento) && !evt.getEliminado()) {
                 return evt;
             }
         }
@@ -71,7 +75,7 @@ public class ManejoEventos {
             ((Contenido) usuario).agregarEvento(codigo);
         }
     }
-    
+
     public String verDatos(String codigo) {
         Evento eventoVer = buscarEvento(codigo);
         return eventoVer.toString();
