@@ -17,13 +17,13 @@ public class ManejoEventos {
     public static ArrayList<Evento> eventos = new ArrayList<>();
     private static int contador = 0;
 
-    public static String codigoActual() {
-        return "EVT" + contador;
+    public static String generarCodigo() {
+        return "EVT" + (contador++);
     }
 
     public Evento buscarEvento(String idEvento) {
         for (Evento evt : eventos) {
-            if (evt.getCodigo().equals("EVT" + contador) && evt.getEliminado() == false) {
+            if (evt.getCodigo().equals(idEvento) && !evt.getEliminado()) {
                 return evt;
             }
         }
@@ -32,42 +32,36 @@ public class ManejoEventos {
 
     public boolean eliminarEvento(String idEvento) {
         Evento eventoEliminar = buscarEvento(idEvento);
-        
         if (eventoEliminar != null) {
             eventoEliminar.setEliminado();
             return true;
-        } else {
-            return false;
         }
-        
+        return false;
     }
 
-    public void crearEventoReligioso(Usuario usuario, String codigo, String titulo, String descripcion,
+    public void crearEventoReligioso(Usuario usuario, String titulo, String descripcion,
             Calendar fechaRealizar, double montoRenta) {
 
+        String codigo = generarCodigo();
         eventos.add(new EventoReligioso(codigo, titulo, descripcion, fechaRealizar, montoRenta));
-
         agregarCodigoUsuario(usuario, codigo);
-        contador++;
     }
 
-    public void crearEventoMusical(Usuario usuario, String codigo, String titulo, String descripcion,
+    public void crearEventoMusical(Usuario usuario, String titulo, String descripcion,
             Calendar fechaRealizar, double montoRenta, TipoMusica tipoMusica) {
 
+        String codigo = generarCodigo();
         eventos.add(new EventoMusical(codigo, titulo, descripcion, fechaRealizar, montoRenta, tipoMusica));
-
         agregarCodigoUsuario(usuario, codigo);
-        contador++;
     }
 
-    public void crearEventoDeportivo(Usuario usuario, String codigo, String titulo, String descripcion,
+    public void crearEventoDeportivo(Usuario usuario, String titulo, String descripcion,
             Calendar fechaRealizar, double montoRenta, String equipo1, String equipo2, TipoDeporte tipoDeporte) {
 
+        String codigo = generarCodigo();
         eventos.add(new EventoDeportivo(codigo, titulo, descripcion, fechaRealizar, montoRenta, equipo1,
                 equipo2, tipoDeporte));
-
         agregarCodigoUsuario(usuario, codigo);
-        contador++;
     }
 
     private void agregarCodigoUsuario(Usuario usuario, String codigo) {
@@ -77,5 +71,4 @@ public class ManejoEventos {
             ((Contenido) usuario).agregarEvento(codigo);
         }
     }
-
 }

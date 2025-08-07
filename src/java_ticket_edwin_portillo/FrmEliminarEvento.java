@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class FrmEliminarEvento extends BaseFrame {
+
     ManejoEventos manejoEventos = new ManejoEventos();
 
     public FrmEliminarEvento() {
@@ -40,23 +41,39 @@ public class FrmEliminarEvento extends BaseFrame {
         JTextField txtEvento = crearTextField(190, 29, 150, 20);
         panelCentro.add(txtEvento);
 
-        setContentPane(panelPrincipal);
-
         JButton btnEliminar = crearBoton("Eliminar evento", 60, 75, 130, 35);
         panelCentro.add(btnEliminar);
 
         JButton btnRegresar = crearBoton("Regresar", 200, 75, 130, 35);
         panelCentro.add(btnRegresar);
-        
-        btnEliminar.addActionListener(e ->{
-            String idEvento = txtEvento.getText();
-            
-            if (manejoEventos.eliminarEvento(idEvento) == true){
+
+        // Acción de eliminar
+        btnEliminar.addActionListener(e -> {
+            String idEvento = txtEvento.getText().trim();
+
+            if (idEvento.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Error: el campo de código está vacío.");
+                return;
+            }
+
+            if (manejoEventos.eliminarEvento(idEvento)) {
                 JOptionPane.showMessageDialog(this, "Evento eliminado correctamente.");
             } else {
-                JOptionPane.showMessageDialog(this, "Error: evento no encontrado. Verifique que el código ingresado"
-                        + "sea correcto.");
+                JOptionPane.showMessageDialog(this, "Error: evento no encontrado o ya eliminado. Verifique el código.");
             }
         });
+
+        // Acción de regresar
+        btnRegresar.addActionListener(e -> {
+            FrmEventos f = new FrmEventos();
+            f.setVisible(true);
+            this.dispose();
+        });
+
+        setContentPane(panelPrincipal);
+    }
+
+    public static void main(String[] args) {
+        new FrmEliminarEvento().setVisible(true);
     }
 }
