@@ -98,6 +98,11 @@ public class FrmCrearUsuario extends BaseFrame {
                 JOptionPane.showMessageDialog(this, "Error: ingrese un valor entero para el campo edad.");
                 return;
             }
+            
+            if(edad <= 0) {
+                JOptionPane.showMessageDialog(this, "Error: favor ingrese una edad válida");
+                return;
+            }
 
             if (!manejoUsuarios.contraseniaValida(contrasenia)) {
                 JOptionPane.showMessageDialog(this, "Error: Contraseña inválida. Debe tener mínimo 8 caracteres"
@@ -112,6 +117,11 @@ public class FrmCrearUsuario extends BaseFrame {
 
             manejoUsuarios.registrarUsuario(rol, nombre, usuario, contrasenia, edad);
             JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
+            
+            txtNombre.setText("");
+            txtUsuario.setText("");
+            txtContrasenia.setText("");
+            txtEdad.setText("");
         });
 
         btnRegresar.addActionListener(e -> {

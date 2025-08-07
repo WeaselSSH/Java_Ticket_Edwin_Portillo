@@ -21,6 +21,27 @@ public class ManejoEventos {
         return "EVT" + contador;
     }
 
+    public Evento buscarEvento(String idEvento) {
+        for (Evento evt : eventos) {
+            if (evt.getCodigo().equals("EVT" + contador) && evt.getEliminado() == false) {
+                return evt;
+            }
+        }
+        return null;
+    }
+
+    public boolean eliminarEvento(String idEvento) {
+        Evento eventoEliminar = buscarEvento(idEvento);
+        
+        if (eventoEliminar != null) {
+            eventoEliminar.setEliminado();
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+
     public void crearEventoReligioso(Usuario usuario, String codigo, String titulo, String descripcion,
             Calendar fechaRealizar, double montoRenta) {
 

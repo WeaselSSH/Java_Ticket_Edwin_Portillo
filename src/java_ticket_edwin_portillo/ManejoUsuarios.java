@@ -11,14 +11,19 @@ public class ManejoUsuarios {
     public static Usuario usuarioLogeado;
     public static ArrayList<Usuario> usuarios = new ArrayList<>();
 
+    private static boolean adminInicializado = false;
+
     public ManejoUsuarios() {
-        Usuario admin = new Administrador("Admin Default", "admin", "supersecreto", 30);
-        usuarios.add(admin);
+        if (!adminInicializado) {
+            Usuario admin = new Administrador("Admin Default", "admin", "supersecreto", 30);
+            usuarios.add(admin);
+            adminInicializado = true;
+        }
     }
 
     public Usuario buscarUsuario(String usuario) {
         for (Usuario u : usuarios) {
-            if (u.getUsuario().equals(usuario)) {
+            if (u.getUsuario().equals(usuario) && u.getEliminado() == false) {
                 return u;
             }
         }
@@ -50,7 +55,7 @@ public class ManejoUsuarios {
 
     public boolean iniciarSesion(String usuario, String contrasenia) {
         Usuario u = buscarUsuario(usuario);
-        if (u != null && u.verificarContrasenia(contrasenia)) {
+        if (u != null && u.verificarContrasenia(contrasenia) && u.getEliminado() == false) {
             usuarioLogeado = u;
             return true;
         }
@@ -79,7 +84,10 @@ public class ManejoUsuarios {
     public boolean eliminarUsuario(String usuario) {
         Usuario u = buscarUsuario(usuario);
         if (u != null) {
-            usuarios.remove(u);
+            if (u.getUsuario().equalsIgnoreCase("admin")) { //admin no se puede eliminar
+                return false;
+            }
+            u.setEliminado();
             return true;
         }
         return false;
@@ -88,9 +96,14 @@ public class ManejoUsuarios {
     public boolean editarUsuario(String usuarioEvaluar, String nuevoNombre, String nuevaContrasenia, int nuevaEdad) {
         Usuario u = buscarUsuario(usuarioEvaluar);
         if (u != null) {
-            if (!contraseniaValida(nuevaContrasenia)) {
+            if (u.getUsuario().equalsIgnoreCase("admin")) { //no se puede editar admin
                 return false;
             }
+
+            if (!contraseniaValida(nuevaContrasenia) || nuevaEdad <= 0) {
+                return false;
+            }
+
             u.setNombre(nuevoNombre);
             u.setContrasenia(nuevaContrasenia);
             u.setEdad(nuevaEdad);

@@ -48,6 +48,8 @@ public class FrmUsuarios extends BaseFrame {
         });
 
         btnEliminar.addActionListener(e -> {
+            new FrmEliminarUsuario().setVisible(true);
+            this.dispose();
         });
 
         btnRegresar.addActionListener(e -> {

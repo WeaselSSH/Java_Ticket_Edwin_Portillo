@@ -12,6 +12,8 @@ public abstract class Evento {
     protected boolean cancelado = false;
     protected boolean realizado = false;
     protected double multa = 0;
+    
+    protected boolean eliminado = false;
 
     public Evento(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
         this.codigo = codigo;
@@ -59,16 +61,20 @@ public abstract class Evento {
         this.realizado = true;
     }
 
-    public void cancelar() {
-        this.cancelado = true;
-    }
-
     public void setMulta(double multa) {
         this.multa = multa;
     }
 
     public double getMulta() {
         return multa;
+    }
+    
+    public void setEliminado() {
+        eliminado = true;
+    }
+    
+    public boolean getEliminado() {
+        return eliminado;
     }
 
 }

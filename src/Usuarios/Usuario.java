@@ -7,6 +7,8 @@ public abstract class Usuario {
     protected String contrasenia;
     protected int edad;
 
+    protected boolean eliminado = false;
+
     public Usuario(String nombre, String usuario, String contrasenia, int edad) {
         this.nombre = nombre;
         this.usuario = usuario;
@@ -45,11 +47,21 @@ public abstract class Usuario {
     }
 
     public void setEdad(int edad) {
-        this.edad = edad;
+        if (edad >= 0) {
+            this.edad = edad;
+        }
     }
 
     public boolean verificarContrasenia(String input) {
         return contrasenia.equals(input);
+    }
+
+    public void setEliminado() {
+        eliminado = true;
+    }
+
+    public boolean getEliminado() {
+        return eliminado;
     }
 
 }
