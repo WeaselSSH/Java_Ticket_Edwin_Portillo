@@ -147,8 +147,8 @@ public class FrmCrearEvento extends BaseFrame {
                 JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
                 return;
             }
-            
-            if(montoRenta < 0) {
+
+            if (montoRenta < 0) {
                 JOptionPane.showMessageDialog(this, "Error: monto de renta no puede ser negativo");
                 return;
             }
@@ -158,6 +158,15 @@ public class FrmCrearEvento extends BaseFrame {
                     manejoEventos.crearEventoReligioso(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
                             fechaRealizar, montoRenta);
                     JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
+
+                    txtTituloEvento.setText("");
+                    txtDescripcion.setText("");
+                    txtMontoRenta.setText("");
+                    txtEquipo1.setText("");
+                    txtEquipo2.setText("");
+                    dateChooser.setCalendar(null);
+                    cboTipo.setSelectedIndex(0);
+
                     break;
 
                 case "MUSICAL":
@@ -165,17 +174,26 @@ public class FrmCrearEvento extends BaseFrame {
                     manejoEventos.crearEventoMusical(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
                             fechaRealizar, montoRenta, tipoMusica);
                     JOptionPane.showMessageDialog(this, "Evento musical creado correctamente.");
+
+                    txtTituloEvento.setText("");
+                    txtDescripcion.setText("");
+                    txtMontoRenta.setText("");
+                    txtEquipo1.setText("");
+                    txtEquipo2.setText("");
+                    dateChooser.setCalendar(null);
+                    cboTipo.setSelectedIndex(0);
+
                     break;
 
                 case "DEPORTIVO":
                     String equipo1 = txtEquipo1.getText().trim();
                     String equipo2 = txtEquipo2.getText().trim();
-                    
+
                     if (equipo1.equalsIgnoreCase(equipo2)) {
                         JOptionPane.showMessageDialog(this, "Error: ambos equipos son iguales.");
                         return;
                     }
-                    
+
                     TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
 
                     if (equipo1.isEmpty() || equipo2.isEmpty()) {
@@ -186,6 +204,13 @@ public class FrmCrearEvento extends BaseFrame {
                     manejoEventos.crearEventoDeportivo(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
                             fechaRealizar, montoRenta, equipo1, equipo2, tipoDeporte);
                     JOptionPane.showMessageDialog(this, "Evento deportivo creado correctamente.");
+
+                    txtTituloEvento.setText("");
+                    txtDescripcion.setText("");
+                    txtMontoRenta.setText("");
+                    txtEquipo1.setText("");
+                    txtEquipo2.setText("");
+                    dateChooser.setCalendar(null);
                     break;
             }
         });

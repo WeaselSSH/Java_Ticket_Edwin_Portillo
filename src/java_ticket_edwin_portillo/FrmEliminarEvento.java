@@ -9,6 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import Eventos.Evento;
+import Usuarios.Contenido;
+import Usuarios.Administrador;
+import Usuarios.Usuario;
+import java.util.Calendar;
 
 public class FrmEliminarEvento extends BaseFrame {
 
@@ -56,11 +61,51 @@ public class FrmEliminarEvento extends BaseFrame {
                 return;
             }
 
-            if (manejoEventos.eliminarEvento(idEvento)) {
-                JOptionPane.showMessageDialog(this, "Evento eliminado correctamente.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error: evento no encontrado o ya eliminado. Verifique el código.");
+            Evento evento = manejoEventos.buscarEvento(idEvento);
+
+            if (evento == null || evento.getEliminado()) {
+                JOptionPane.showMessageDialog(this, "Error: evento no encontrado o ya eliminado.");
+                return;
             }
+
+            //Con polimorfismo se verifica el tipo de usuario para acceder a su arraylist con ideventos
+            if (ManejoUsuarios.usuarioLogeado instanceof Administrador) {
+                Administrador admin = (Administrador) ManejoUsuarios.usuarioLogeado;
+                if (!admin.getEventosCreados().contains(idEvento)) {
+                    JOptionPane.showMessageDialog(this, "Error: solo el creador puede eliminar este evento.");
+                    return;
+                }
+            } else {
+                Contenido contenido = (Contenido) ManejoUsuarios.usuarioLogeado;
+                if (!contenido.getEventosCreados().contains(idEvento)) {
+                    JOptionPane.showMessageDialog(this, "Error: solo el creador puede eliminar este evento.");
+                    return;
+                }
+            }
+
+            if (evento.Realizado()) {
+                JOptionPane.showMessageDialog(this, "Error: no se puede eliminar un evento ya realizado.");
+                return;
+            }
+
+            Calendar hoy = Calendar.getInstance();
+            Calendar fechaEvento = evento.getFechaRealizar();
+            Long hoyMilis = hoy.getTimeInMillis();
+            Long fechaEventoMilis = fechaEvento.getTimeInMillis();
+            Long diferenciaTiempo = fechaEventoMilis - hoyMilis;
+
+            if (diferenciaTiempo <= 86400000) {
+                if (!evento.getTipo().equalsIgnoreCase("religioso")) {
+                    double multa = evento.getMontoRenta() * 0.5;
+                    evento.setMulta(multa);
+                    JOptionPane.showMessageDialog(this, "Multa de L." + multa + " "
+                            + "aplicada por cancelar con 1 día de anticipación.");
+                }
+            }
+
+            evento.setCancelado();
+            evento.setEliminado();
+            JOptionPane.showMessageDialog(this, "Evento eliminado correctamente.");
         });
 
         // Acción de regresar

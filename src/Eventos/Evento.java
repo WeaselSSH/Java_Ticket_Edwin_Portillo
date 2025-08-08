@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public abstract class Evento {
 
-    protected String codigo;
+    protected final String codigo;
     protected String titulo;
     protected String descripcion;
     protected Calendar fechaRealizar;

@@ -28,4 +28,8 @@ public class EventoReligioso extends Evento {
         return montoFijo;
     }
 
+    public String toString() {
+        return super.toString() + "\n Seguro por desgaste de grama: " + montoFijo +
+                "\nCantidad de convertidos: " + cantidadConvertidos;
+    }
 }
