@@ -98,8 +98,10 @@ public class FrmEliminarEvento extends BaseFrame {
                 if (!evento.getTipo().equalsIgnoreCase("religioso")) {
                     double multa = evento.getMontoRenta() * 0.5;
                     evento.setMulta(multa);
-                    JOptionPane.showMessageDialog(this, "Multa de L." + multa + " "
-                            + "aplicada por cancelar con 1 día de anticipación.");
+
+                    String multa2Decimas = String.format("%.2f", multa);
+                    JOptionPane.showMessageDialog(this, "Multa de L." + multa2Decimas
+                            + " aplicada por cancelar con 1 día de anticipación.");
                 }
             }
 
