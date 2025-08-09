@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 public class FrmCrearUsuario extends BaseFrame {
 
-    private final ManejoUsuarios manejoUsuarios = new ManejoUsuarios();
+    private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmCrearUsuario() {
         super("Crear Usuario", 450, 360);
@@ -98,8 +98,8 @@ public class FrmCrearUsuario extends BaseFrame {
                 JOptionPane.showMessageDialog(this, "Error: ingrese un valor entero para el campo edad.");
                 return;
             }
-            
-            if(edad <= 0) {
+
+            if (edad <= 0) {
                 JOptionPane.showMessageDialog(this, "Error: favor ingrese una edad válida");
                 return;
             }
@@ -115,9 +115,14 @@ public class FrmCrearUsuario extends BaseFrame {
                 return;
             }
 
-            manejoUsuarios.registrarUsuario(rol, nombre, usuario, contrasenia, edad);
+            boolean registroExitoso = manejoUsuarios.registrarUsuario(rol, nombre, usuario, contrasenia, edad);
+            if (!registroExitoso) {
+                JOptionPane.showMessageDialog(this, "No se pudo registrar (rol inválido o datos incorrectos).");
+                return;
+            }
+
             JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
-            
+
             txtNombre.setText("");
             txtUsuario.setText("");
             txtContrasenia.setText("");

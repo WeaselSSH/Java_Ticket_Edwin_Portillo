@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 public final class Contenido extends Usuario {
 
-    private ArrayList<String> eventosCreados;
+    private final ArrayList<String> eventosCreados = new ArrayList<>();
 
     public Contenido(String nombre, String usuario, String contrasenia, int edad) {
         super(nombre, usuario, contrasenia, edad);
-        this.eventosCreados = new ArrayList<>();
     }
 
     @Override
@@ -20,11 +19,14 @@ public final class Contenido extends Usuario {
         return eventosCreados;
     }
 
-    public void agregarEvento(String idEvento) {
-        eventosCreados.add(idEvento);
+    public boolean agregarEvento(String codigoEvento) {
+        if (codigoEvento == null || codigoEvento.trim().isEmpty()) {
+            return false;
+        }
+        return eventosCreados.add(codigoEvento);
     }
 
-    public void eliminarEvento(String idEvento) {
-        eventosCreados.remove(idEvento);
+    public boolean eliminarEvento(String codigoEvento) {
+        return eventosCreados.remove(codigoEvento);
     }
 }

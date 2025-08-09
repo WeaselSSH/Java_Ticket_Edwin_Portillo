@@ -13,8 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 
 public class FrmLogin extends BaseFrame {
-
-    ManejoUsuarios manejoUsuarios = new ManejoUsuarios();
+    
+    private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmLogin() {
         super("Inicio de Sesión", 400, 260);
@@ -64,30 +64,32 @@ public class FrmLogin extends BaseFrame {
         btnInicio.addActionListener(e -> {
             String contrasenia = new String(txtContrasenia.getPassword());
             String NombreUsuario = txtUsuario.getText();
+            
+            if (NombreUsuario.trim().isEmpty() || contrasenia.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Error: uno de los campos se encuentra vacío.");
+                return;
+            }
 
             if (manejoUsuarios.iniciarSesion(NombreUsuario, contrasenia)) {
-                Usuario usuario = manejoUsuarios.buscarUsuario(NombreUsuario);
+                Usuario usuario = manejoUsuarios.getUsuarioLogeado();
 
                 switch (usuario.getRol().toLowerCase()) {
                     case "administrador":
-                        FrmMenuAdmin ma = new FrmMenuAdmin();
-                        ma.setVisible(true);
+                        new FrmMenuAdmin().setVisible(true);
                         this.dispose();
                         break;
                     case "contenido":
-                        FrmMenuContenido mc = new FrmMenuContenido();
-                        mc.setVisible(true);
+                        new FrmMenuContenido().setVisible(true);
                         this.dispose();
                         break;
                     case "limitado":
-                        FrmMenuLimitado ml = new FrmMenuLimitado();
-                        ml.setVisible(true);
+                        new FrmMenuLimitado().setVisible(true);
                         this.dispose();
                         break;
                 }
 
             } else {
-                JOptionPane.showMessageDialog(null, "Error: Usuario o contraseña incorrectos.");
+                JOptionPane.showMessageDialog(this, "Error: Usuario o contraseña incorrectos.");
             }
         });
 
@@ -99,7 +101,6 @@ public class FrmLogin extends BaseFrame {
     }
 
     public static void main(String[] args) {
-        FrmLogin login = new FrmLogin();
-        login.setVisible(true);
+        new FrmLogin().setVisible(true);
     }
 }

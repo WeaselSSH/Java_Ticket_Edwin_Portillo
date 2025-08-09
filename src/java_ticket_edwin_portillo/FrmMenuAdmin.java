@@ -40,14 +40,12 @@ public class FrmMenuAdmin extends BaseFrame {
 
         //Acciones
         btnEventos.addActionListener(e -> {
-            FrmEventos evt = new FrmEventos();
-            evt.setVisible(true);
+            new FrmEventos().setVisible(true);
             this.dispose();
         });
 
         btnUsuarios.addActionListener(e -> {
-            FrmUsuarios u = new FrmUsuarios();
-            u.setVisible(true);
+            new FrmUsuarios().setVisible(true);
             this.dispose();
         });
 
@@ -55,8 +53,7 @@ public class FrmMenuAdmin extends BaseFrame {
         });
 
         btnSalir.addActionListener(e -> {
-            FrmLogin login = new FrmLogin();
-            login.setVisible(true);
+            new FrmLogin().setVisible(true);
             this.dispose();
         });
 
@@ -64,7 +61,6 @@ public class FrmMenuAdmin extends BaseFrame {
     }
 
     public static void main(String[] args) {
-        FrmMenuAdmin mp = new FrmMenuAdmin();
-        mp.setVisible(true);
+        new FrmMenuAdmin().setVisible(true);
     }
 }

@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 
 public class FrmVerEvento extends BaseFrame {
 
-    ManejoEventos manejoEventos = new ManejoEventos();
+    ManejoEventos manejoEventos = ManejoEventos.getInstancia();
 
     public FrmVerEvento() {
         super("Ver evento", 380, 480);

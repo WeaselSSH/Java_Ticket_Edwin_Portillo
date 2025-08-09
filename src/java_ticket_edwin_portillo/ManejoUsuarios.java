@@ -8,22 +8,31 @@ import java.util.ArrayList;
 
 public class ManejoUsuarios {
 
-    public static Usuario usuarioLogeado;
-    public static ArrayList<Usuario> usuarios = new ArrayList<>();
+    //Misma idea que en manejo eventos
+    private static final ManejoUsuarios instManejoUsuarios = new ManejoUsuarios();
 
-    private static boolean adminInicializado = false;
+    private final ArrayList<Usuario> usuarios = new ArrayList<>();
+    private Usuario usuarioLogeado;
 
-    public ManejoUsuarios() {
-        if (!adminInicializado) {
-            Usuario admin = new Administrador("Admin Default", "admin", "supersecreto", 30);
-            usuarios.add(admin);
-            adminInicializado = true;
-        }
+    public static ManejoUsuarios getInstancia() {
+        return instManejoUsuarios;
+    }
+
+    private ManejoUsuarios() {
+        usuarios.add(new Administrador("Admin Default", "admin", "supersecreto", 30));
+    }
+
+    public Usuario getUsuarioLogeado() {
+        return usuarioLogeado;
+    }
+
+    public ArrayList<Usuario> getUsuarios() {
+        return usuarios;
     }
 
     public Usuario buscarUsuario(String usuario) {
         for (Usuario u : usuarios) {
-            if (u.getUsuario().equals(usuario) && u.getEliminado() == false) {
+            if (!u.getEliminado() && u.getUsuario().equalsIgnoreCase(usuario)) {
                 return u;
             }
         }
@@ -31,7 +40,7 @@ public class ManejoUsuarios {
     }
 
     public boolean contraseniaValida(String contrasenia) {
-        if (contrasenia.length() < 8) {
+        if (contrasenia == null || contrasenia.length() < 8) {
             return false;
         }
 
@@ -63,28 +72,41 @@ public class ManejoUsuarios {
     }
 
     public boolean registrarUsuario(String rol, String nombre, String usuario, String contrasenia, int edad) {
-        if (buscarUsuario(usuario) != null || !contraseniaValida(contrasenia)) {
+        if (nombre == null || nombre.isBlank()) {
+            return false;
+        }
+        if (usuario == null || usuario.isBlank()) {
+            return false;
+        }
+        if (edad <= 0) {
+            return false;
+        }
+        if (!contraseniaValida(contrasenia)) {
+            return false;
+        }
+        if (buscarUsuario(usuario) != null) {
             return false;
         }
 
         switch (rol.toLowerCase()) {
             case "administrador":
                 usuarios.add(new Administrador(nombre, usuario, contrasenia, edad));
-                break;
+                return true;
             case "contenido":
                 usuarios.add(new Contenido(nombre, usuario, contrasenia, edad));
-                break;
+                return true;
             case "limitado":
                 usuarios.add(new Limitado(nombre, usuario, contrasenia, edad));
-                break;
+                return true;
+            default:
+                return false;
         }
-        return true;
     }
 
     public boolean eliminarUsuario(String usuario) {
         Usuario u = buscarUsuario(usuario);
         if (u != null) {
-            if (u.getUsuario().equalsIgnoreCase("admin")) { //admin no se puede eliminar
+            if (u.getUsuario().equalsIgnoreCase("admin")) { //admin no se puede eliminar (supongo)
                 return false;
             }
             u.setEliminado();
@@ -92,24 +114,4 @@ public class ManejoUsuarios {
         }
         return false;
     }
-
-    public boolean editarUsuario(String usuarioEvaluar, String nuevoNombre, String nuevaContrasenia, int nuevaEdad) {
-        Usuario u = buscarUsuario(usuarioEvaluar);
-        if (u != null) {
-            if (u.getUsuario().equalsIgnoreCase("admin")) { //no se puede editar admin
-                return false;
-            }
-
-            if (!contraseniaValida(nuevaContrasenia) || nuevaEdad <= 0) {
-                return false;
-            }
-
-            u.setNombre(nuevoNombre);
-            u.setContrasenia(nuevaContrasenia);
-            u.setEdad(nuevaEdad);
-            return true;
-        }
-        return false;
-    }
-
 }

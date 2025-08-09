@@ -53,7 +53,7 @@ public abstract class Usuario {
     }
 
     public boolean verificarContrasenia(String input) {
-        return contrasenia.equals(input);
+        return contrasenia != null && contrasenia.equals(input);
     }
 
     public void setEliminado() {
@@ -64,4 +64,11 @@ public abstract class Usuario {
         return eliminado;
     }
 
+    public String toString() {
+        return "Usuario: " + usuario
+                + "\nNombre: " + nombre
+                + "\nRol: " + getRol()
+                + "\nEdad: " + edad
+                + (eliminado ? "\nELIMINADO" : "");
+    }
 }

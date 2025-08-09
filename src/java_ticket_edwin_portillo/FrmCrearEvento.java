@@ -1,5 +1,6 @@
 package java_ticket_edwin_portillo;
 
+import Usuarios.Usuario;
 import Tipos.TipoMusica;
 import Tipos.TipoDeporte;
 import com.toedter.calendar.JDateChooser;
@@ -9,7 +10,8 @@ import java.util.Calendar;
 
 public class FrmCrearEvento extends BaseFrame {
 
-    ManejoEventos manejoEventos = new ManejoEventos();
+    private final ManejoEventos manejoEventos = ManejoEventos.getInstancia();
+    private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmCrearEvento() {
         super("Crear Evento", 440, 560);
@@ -38,7 +40,7 @@ public class FrmCrearEvento extends BaseFrame {
         JTextField txtCodigo = crearTextField(170, 0, 200, 25);
         txtCodigo.setEditable(false);
         txtCodigo.setFocusable(false);
-        txtCodigo.setText(ManejoEventos.codigoSiguiente());
+        txtCodigo.setText(manejoEventos.codigoSiguiente());
         panelCentro.add(txtCodigo);
 
         JLabel lblTituloEvento = crearLabel("Título:", 35, 35, 140, 25, Font.BOLD, 14f);
@@ -119,9 +121,7 @@ public class FrmCrearEvento extends BaseFrame {
         panelCentro.add(btnRegresar);
 
         btnRegresar.addActionListener(e -> {
-            FrmEventos evt = new FrmEventos();
-            evt.setVisible(true);
-            this.dispose();
+            new FrmEventos().setVisible(true);
         });
 
         //botón crear
@@ -129,90 +129,82 @@ public class FrmCrearEvento extends BaseFrame {
         panelCentro.add(btnCrear);
 
         btnCrear.addActionListener(e -> {
+            Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
+
             String titulo = txtTituloEvento.getText().trim();
             String descripcion = txtDescripcion.getText().trim();
             Calendar fechaRealizar = dateChooser.getCalendar();
             String tipo = (String) cboTipo.getSelectedItem();
             String montoTexto = txtMontoRenta.getText().trim();
-            double montoRenta;
 
-            if (titulo.isEmpty() || fechaRealizar == null || montoTexto.isEmpty()) {
+            if (titulo.isEmpty() || fechaRealizar == null || montoTexto.isEmpty() || descripcion.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Error: todos los campos generales deben estar llenos.");
                 return;
             }
 
+            double montoRenta;
             try {
                 montoRenta = Double.parseDouble(montoTexto);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
                 return;
             }
-
             if (montoRenta < 0) {
-                JOptionPane.showMessageDialog(this, "Error: monto de renta no puede ser negativo");
+                JOptionPane.showMessageDialog(this, "Error: monto de renta no puede ser negativo.");
                 return;
             }
 
+            String codigo = manejoEventos.codigoSiguiente();
+
             switch (tipo) {
                 case "RELIGIOSO":
-                    manejoEventos.crearEventoReligioso(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
-                            fechaRealizar, montoRenta);
+                    manejoEventos.crearEventoReligioso(usuarioLogeado, codigo, titulo, descripcion, fechaRealizar, montoRenta);
                     JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
-
-                    txtTituloEvento.setText("");
-                    txtDescripcion.setText("");
-                    txtMontoRenta.setText("");
-                    txtEquipo1.setText("");
-                    txtEquipo2.setText("");
-                    dateChooser.setCalendar(null);
-                    cboTipo.setSelectedIndex(0);
-
                     break;
 
                 case "MUSICAL":
                     TipoMusica tipoMusica = (TipoMusica) cboMusica.getSelectedItem();
-                    manejoEventos.crearEventoMusical(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
-                            fechaRealizar, montoRenta, tipoMusica);
+                    if (tipoMusica == null) {
+                        JOptionPane.showMessageDialog(this, "Seleccione un tipo de música.");
+                        return;
+                    }
+                    manejoEventos.crearEventoMusical(usuarioLogeado, codigo, titulo, descripcion, fechaRealizar, montoRenta, tipoMusica);
                     JOptionPane.showMessageDialog(this, "Evento musical creado correctamente.");
-
-                    txtTituloEvento.setText("");
-                    txtDescripcion.setText("");
-                    txtMontoRenta.setText("");
-                    txtEquipo1.setText("");
-                    txtEquipo2.setText("");
-                    dateChooser.setCalendar(null);
-                    cboTipo.setSelectedIndex(0);
-
                     break;
 
                 case "DEPORTIVO":
                     String equipo1 = txtEquipo1.getText().trim();
                     String equipo2 = txtEquipo2.getText().trim();
-
-                    if (equipo1.equalsIgnoreCase(equipo2)) {
-                        JOptionPane.showMessageDialog(this, "Error: ambos equipos son iguales.");
-                        return;
-                    }
-
-                    TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
-
                     if (equipo1.isEmpty() || equipo2.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Error: debe ingresar ambos equipos.");
                         return;
                     }
-
-                    manejoEventos.crearEventoDeportivo(ManejoUsuarios.usuarioLogeado, titulo, descripcion,
-                            fechaRealizar, montoRenta, equipo1, equipo2, tipoDeporte);
+                    if (equipo1.equalsIgnoreCase(equipo2)) {
+                        JOptionPane.showMessageDialog(this, "Error: ambos equipos son iguales.");
+                        return;
+                    }
+                    TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
+                    if (tipoDeporte == null) {
+                        JOptionPane.showMessageDialog(this, "Seleccione un tipo de deporte.");
+                        return;
+                    }
+                    manejoEventos.crearEventoDeportivo(usuarioLogeado, codigo, titulo, descripcion, fechaRealizar, montoRenta, equipo1, equipo2, tipoDeporte);
                     JOptionPane.showMessageDialog(this, "Evento deportivo creado correctamente.");
-
-                    txtTituloEvento.setText("");
-                    txtDescripcion.setText("");
-                    txtMontoRenta.setText("");
-                    txtEquipo1.setText("");
-                    txtEquipo2.setText("");
-                    dateChooser.setCalendar(null);
                     break;
             }
+
+            //vaciar campos y refrescar código
+            txtTituloEvento.setText("");
+            txtDescripcion.setText("");
+            txtMontoRenta.setText("");
+            txtEquipo1.setText("");
+            txtEquipo2.setText("");
+            dateChooser.setCalendar(null);
+            cboTipo.setSelectedIndex(0);
+            panelDeportivo.setVisible(true);
+            panelMusical.setVisible(false);
+
+            txtCodigo.setText(manejoEventos.codigoSiguiente());
         });
 
         setContentPane(panelPrincipal);

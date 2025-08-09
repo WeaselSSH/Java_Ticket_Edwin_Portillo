@@ -9,10 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import Usuarios.Usuario;
 
 public class FrmEliminarUsuario extends BaseFrame {
 
-    ManejoUsuarios manejoUsuarios = new ManejoUsuarios();
+    ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmEliminarUsuario() {
         super("Eliminar Usuario", 400, 250);
@@ -48,6 +49,7 @@ public class FrmEliminarUsuario extends BaseFrame {
         panelCentro.add(btnRegresar);
 
         btnEliminar.addActionListener(e -> {
+            Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
             String usuarioEliminar = txtUsuario.getText().trim();
 
             if (usuarioEliminar.isEmpty()) {
@@ -65,12 +67,10 @@ public class FrmEliminarUsuario extends BaseFrame {
                 return;
             }
 
-            boolean usuarioLogeado = (usuarioEliminar.equalsIgnoreCase(ManejoUsuarios.usuarioLogeado.getUsuario()));
-
             if (manejoUsuarios.eliminarUsuario(usuarioEliminar)) {
                 JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
 
-                if (usuarioLogeado) {
+                if (usuarioLogeado.getUsuario().equalsIgnoreCase(usuarioEliminar)) {
                     new FrmLogin().setVisible(true);
                     this.dispose();
                 }

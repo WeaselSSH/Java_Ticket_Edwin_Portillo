@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class FrmEventos extends BaseFrame {
 
+    private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
+
     public FrmEventos() {
         super("Administración de Eventos", 420, 400);
     }
@@ -43,8 +45,7 @@ public class FrmEventos extends BaseFrame {
 
         // Acciones
         btnCrear.addActionListener(e -> {
-            FrmCrearEvento ce = new FrmCrearEvento();
-            ce.setVisible(true);
+            new FrmCrearEvento().setVisible(true);
             this.dispose();
         });
 
@@ -62,18 +63,16 @@ public class FrmEventos extends BaseFrame {
         });
 
         btnRegresar.addActionListener(e -> {
-            if (ManejoUsuarios.usuarioLogeado.getRol().equalsIgnoreCase("administrador")) {
-                FrmMenuAdmin ma = new FrmMenuAdmin();
-                ma.setVisible(true);
-                this.dispose();
-            }else if (ManejoUsuarios.usuarioLogeado.getRol().equalsIgnoreCase("contenido")) {
-                FrmMenuContenido mc = new FrmMenuContenido();
-                mc.setVisible(true);
-                this.dispose();
-            } else {
-                FrmMenuLimitado ml = new FrmMenuLimitado();
-                ml.setVisible(true);
-                this.dispose();
+            switch (manejoUsuarios.getUsuarioLogeado().getRol().toLowerCase()) {
+                case "administrador":
+                    new FrmMenuAdmin().setVisible(true);
+                    break;
+                case "contenido":
+                    new FrmMenuContenido().setVisible(true);
+                    break;
+                default:
+                    new FrmMenuLimitado().setVisible(true);
+                    break;
             }
         });
 

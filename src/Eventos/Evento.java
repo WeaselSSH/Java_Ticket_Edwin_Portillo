@@ -12,8 +12,7 @@ public abstract class Evento {
     protected boolean cancelado = false;
     protected boolean realizado = false;
     protected double multa = 0;
-
-    protected boolean eliminado = false;
+    protected boolean multaPagada = false;
 
     public Evento(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
         this.codigo = codigo;
@@ -38,55 +37,90 @@ public abstract class Evento {
     }
 
     public Calendar getFechaRealizar() {
-        return fechaRealizar;
+        return (Calendar) fechaRealizar.clone();
     }
 
     public double getMontoRenta() {
         return montoRenta;
     }
 
-    public boolean Cancelado() {
+    public boolean getCancelado() {
         return cancelado;
     }
 
-    public void setCancelado() {
-        cancelado = true;
-    }
-
-    public boolean Realizado() {
+    public boolean getRealizado() {
         return realizado;
     }
 
-    public void setRealizado() {
-        this.realizado = true;
+    public boolean setRealizado() {
+        if (cancelado || realizado) {
+            return false;
+        }
+        realizado = true;
+        return true;
     }
 
-    public void setMulta(double multa) {
-        this.multa = multa;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setFechaRealizar(Calendar fechaRealizar) {
+        this.fechaRealizar = fechaRealizar;
+    }
+
+    public void setMontoRenta(double montoRenta) {
+        this.montoRenta = montoRenta;
     }
 
     public double getMulta() {
         return multa;
     }
 
-    public void setEliminado() {
-        eliminado = true;
+    public void setMulta(double multa) {
+        this.multa = multa;
     }
 
-    public boolean getEliminado() {
-        return eliminado;
+    public boolean setCancelado() {
+        if (realizado || cancelado) {
+            return false;
+        } else {
+            cancelado = true;
+            return true;
+        }
+    }
+
+    public void pagarMulta() {
+        this.multaPagada = true;
+    }
+
+    public boolean getMultaPagada() {
+        return multaPagada;
     }
 
     @Override
     public String toString() {
-        return "Código: " + codigo
+        String fecha = new java.text.SimpleDateFormat("dd/MM/yyyy")
+                .format(fechaRealizar.getTime());
+
+        String base = "Código: " + codigo
                 + "\nTítulo: " + titulo
                 + "\nDescripción: " + descripcion
-                + "\nFecha: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(fechaRealizar.getTime())
+                + "\nFecha: " + fecha
                 + "\nMonto de Renta: L." + montoRenta
-                + "\nTipo: " + getTipo()
-                + (cancelado ? "\n Evento Cancelado" : "")
-                + (multa > 0 ? "\n? Multa pagada: L." + multa : "");
+                + "\nTipo: " + getTipo();
+
+        String estado = (cancelado ? "\nEvento cancelado" : "")
+                + (realizado ? "\nEvento realizado" : "");
+
+        String multaTexto = (multa > 0)
+                ? "\nMulta: L." + multa + (multaPagada ? " (pagada)" : " (pendiente)")
+                : "";
+
+        return base + estado + multaTexto;
     }
 
 }

@@ -1,6 +1,5 @@
 package Eventos;
 
-import Eventos.Evento;
 import java.util.Calendar;
 import java.util.ArrayList;
 import Tipos.TipoMusica;
@@ -9,18 +8,15 @@ public class EventoMusical extends Evento {
 
     private TipoMusica tipoMusica;
     private ArrayList<String> staffTecnico;
-    private double seguro;
 
-    public static final int cantidadMaxima = 25000;
-    public static final double porcentajeSeguro = 0.30;
+    public static final int CANTIDAD_MAXIMA = 25_000;
+    public static final double PORCENTAJE_SEGURO = 0.30;
 
-    public EventoMusical(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta,
-            TipoMusica tipoMusica) {
-
+    public EventoMusical(String codigo, String titulo, String descripcion, Calendar fechaRealizar,
+            double montoRenta, TipoMusica tipoMusica) {
         super(codigo, titulo, descripcion, fechaRealizar, montoRenta);
         this.tipoMusica = tipoMusica;
-        staffTecnico = new ArrayList<>();
-        this.seguro = montoRenta * porcentajeSeguro;
+        this.staffTecnico = new ArrayList<>();
     }
 
     @Override
@@ -28,16 +24,35 @@ public class EventoMusical extends Evento {
         return "Musical";
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "\nTipo de Música: " + tipoMusica;
+    public TipoMusica getTipoMusica() {
+        return tipoMusica;
+    }
+
+    public void setTipoMusica(TipoMusica tipoMusica) {
+        this.tipoMusica = tipoMusica;
     }
 
     public void agregarStaff(String nombre) {
         staffTecnico.add(nombre);
     }
 
+    public boolean eliminarStaff(String nombre) {
+        return staffTecnico.remove(nombre);
+    }
+
+    public ArrayList<String> getStaffTecnico() {
+        return staffTecnico;
+    }
+
     public double getSeguro() {
-        return seguro;
+        return getMontoRenta() * PORCENTAJE_SEGURO;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()
+                + "\nTipo de Música: " + tipoMusica
+                + "\nSeguro (30%): L." + String.format("%.2f", getSeguro())
+                + "\nStaff técnico: " + staffTecnico.size();
     }
 }
