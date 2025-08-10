@@ -50,6 +50,8 @@ public class FrmEventos extends BaseFrame {
         });
 
         btnEditar.addActionListener(e -> {
+            new FrmEditarEvento().setVisible(true);
+            this.dispose();
         });
 
         btnEliminar.addActionListener(e -> {
@@ -66,12 +68,15 @@ public class FrmEventos extends BaseFrame {
             switch (manejoUsuarios.getUsuarioLogeado().getRol().toLowerCase()) {
                 case "administrador":
                     new FrmMenuAdmin().setVisible(true);
+                    this.dispose();
                     break;
                 case "contenido":
                     new FrmMenuContenido().setVisible(true);
+                    this.dispose();
                     break;
                 default:
                     new FrmMenuLimitado().setVisible(true);
+                    this.dispose();
                     break;
             }
         });

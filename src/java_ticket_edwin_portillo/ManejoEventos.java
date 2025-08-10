@@ -119,4 +119,122 @@ public class ManejoEventos {
         Evento evtVer = buscarEvento(codigo);
         return (evtVer != null) ? evtVer.toString() : "Evento no encontrado";
     }
+
+    public boolean editarEventoReligioso(Usuario usuario, String codigo, String titulo, String descripcion,
+            Calendar fechaRealizar, double montoRenta, int convertidos) {
+
+        Evento e = buscarEvento(codigo);
+
+        if (e == null) {
+            return false;
+        }
+        EventoReligioso evt = (EventoReligioso) e;
+
+        evt.setTitulo(titulo);
+        evt.setDescripcion(descripcion);
+        evt.setFechaRealizar(fechaRealizar);
+        evt.setMontoRenta(montoRenta);
+
+        evt.setCantidadConvertidos(convertidos);
+
+        return true;
+    }
+
+    public boolean editarEventoMusical(Usuario usuario, String codigo, String titulo, String descripcion,
+            Calendar fechaRealizar, double montoRenta, TipoMusica tipoMusica, ArrayList<String> StaffTecnico) {
+
+        Evento e = buscarEvento(codigo);
+
+        if (e == null) {
+            return false;
+        }
+
+        EventoMusical evt = (EventoMusical) e;
+
+        evt.setTitulo(titulo);
+        evt.setDescripcion(descripcion);
+        evt.setFechaRealizar(fechaRealizar);
+        evt.setMontoRenta(montoRenta);
+
+        evt.setTipoMusica(tipoMusica);
+
+        evt.getStaffTecnico().clear();
+
+        for (String staffTecnico : StaffTecnico) {
+            evt.agregarStaff(staffTecnico);
+        }
+
+        return true;
+    }
+
+    public boolean editarEventoDeportivo(Usuario usuario, String codigo, String titulo, String descripcion,
+            Calendar fechaRealizar, double montoRenta, String equipo1, String equipo2, TipoDeporte tipoDeporte,
+            String jugadores1[], String jugadores2[]) {
+
+        Evento e = buscarEvento(codigo);
+
+        if (e == null) {
+            return false;
+        }
+
+        EventoDeportivo evt = (EventoDeportivo) e;
+
+        evt.setTitulo(titulo);
+        evt.setDescripcion(descripcion);
+        evt.setFechaRealizar(fechaRealizar);
+        evt.setMontoRenta(montoRenta);
+        evt.setEquipo1(equipo1);
+        evt.setEquipo2(equipo2);
+        evt.setTipoDeporte(tipoDeporte);
+
+        evt.getJugadoresEquipo1().clear();
+        evt.getJugadoresEquipo2().clear();
+
+        for (String jugador : jugadores1) {
+            evt.agregarJugadorEquipo1(jugador);
+        }
+
+        for (String jugador : jugadores2) {
+            evt.agregarJugadorEquipo2(jugador);
+        }
+
+        return true;
+    }
+
+    public boolean actualizarJugadoresDeportivo(Usuarios.Usuario usuario, String codigo,
+            String[] jugadores1, String[] jugadores2) {
+        Evento evt = buscarEvento(codigo);
+        
+        if (evt == null || !(evt instanceof Eventos.EventoDeportivo)) {
+            return false;
+        }
+
+        Eventos.EventoDeportivo d = (Eventos.EventoDeportivo) evt;
+
+        d.getJugadoresEquipo1().clear();
+        d.getJugadoresEquipo2().clear();
+
+        if (jugadores1 != null) {
+            for (String j : jugadores1) {
+                if (j != null) {
+                    String nombre = j.trim();
+                    if (!nombre.isEmpty()) {
+                        d.agregarJugadorEquipo1(nombre);
+                    }
+                }
+            }
+        }
+        if (jugadores2 != null) {
+            for (String j : jugadores2) {
+                if (j != null) {
+                    String nombre = j.trim();
+                    if (!nombre.isEmpty()) {
+                        d.agregarJugadorEquipo2(nombre);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 }

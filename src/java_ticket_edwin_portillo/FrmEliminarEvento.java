@@ -56,7 +56,7 @@ public class FrmEliminarEvento extends BaseFrame {
         btnEliminar.addActionListener(e -> {
             Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
 
-            String codigoEvento = txtEvento.getText().trim();
+            String codigoEvento = txtEvento.getText().trim().toUpperCase();
 
             if (codigoEvento.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Error: el campo de código está vacío.");

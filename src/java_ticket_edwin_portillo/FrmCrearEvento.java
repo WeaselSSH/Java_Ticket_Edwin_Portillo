@@ -40,7 +40,7 @@ public class FrmCrearEvento extends BaseFrame {
         JTextField txtCodigo = crearTextField(170, 0, 200, 25);
         txtCodigo.setEditable(false);
         txtCodigo.setFocusable(false);
-        txtCodigo.setText(manejoEventos.codigoSiguiente());
+        txtCodigo.setText(manejoEventos.getInstancia().codigoSiguiente());
         panelCentro.add(txtCodigo);
 
         JLabel lblTituloEvento = crearLabel("Título:", 35, 35, 140, 25, Font.BOLD, 14f);
@@ -122,6 +122,7 @@ public class FrmCrearEvento extends BaseFrame {
 
         btnRegresar.addActionListener(e -> {
             new FrmEventos().setVisible(true);
+            this.dispose();
         });
 
         //botón crear
