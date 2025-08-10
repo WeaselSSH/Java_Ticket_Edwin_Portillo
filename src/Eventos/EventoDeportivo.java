@@ -81,10 +81,43 @@ public class EventoDeportivo extends Evento {
 
     @Override
     public String toString() {
-        return super.toString()
+        String base = super.toString()
                 + "\nTipo de Deporte: " + tipoDeporte
                 + "\nEquipo 1: " + equipo1 + " (jugadores: " + jugadoresEquipo1.size() + ")"
                 + "\nEquipo 2: " + equipo2 + " (jugadores: " + jugadoresEquipo2.size() + ")";
+
+        String lista1 = "";
+        for (String s : jugadoresEquipo1) {
+            if (s == null) {
+                continue;
+            }
+            s = s.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            lista1 += (lista1.isEmpty() ? "" : ", ") + s;
+        }
+
+        String lista2 = "";
+        for (String s : jugadoresEquipo2) {
+            if (s == null) {
+                continue;
+            }
+            s = s.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            lista2 += (lista2.isEmpty() ? "" : ", ") + s;
+        }
+
+        if (!lista1.isEmpty()) {
+            base += "\n- Jugadores " + equipo1 + ": " + lista1;
+        }
+        if (!lista2.isEmpty()) {
+            base += "\n- Jugadores " + equipo2 + ": " + lista2;
+        }
+
+        return base;
     }
 
 }

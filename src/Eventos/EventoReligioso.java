@@ -18,6 +18,10 @@ public class EventoReligioso extends Evento {
     public String getTipo() {
         return "Religioso";
     }
+    
+    public int getCantidadConvertidos() {
+        return cantidadConvertidos;
+    }
 
     public void setCantidadConvertidos(int cantidad) {
         this.cantidadConvertidos = cantidad;

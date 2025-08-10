@@ -50,9 +50,28 @@ public class EventoMusical extends Evento {
 
     @Override
     public String toString() {
-        return super.toString()
+        String base = super.toString()
                 + "\nTipo de Música: " + tipoMusica
                 + "\nSeguro (30%): L." + String.format("%.2f", getSeguro())
                 + "\nStaff técnico: " + staffTecnico.size();
+
+        String listaStaff = "";
+        for (String s : staffTecnico) {
+            if (s == null) {
+                continue;
+            }
+            s = s.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            listaStaff += (listaStaff.isEmpty() ? "" : ", ") + s;
+        }
+
+        if (!listaStaff.isEmpty()) {
+            base += "\n- Staff: " + listaStaff;
+        }
+
+        return base;
     }
+
 }

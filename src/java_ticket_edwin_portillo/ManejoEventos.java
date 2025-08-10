@@ -128,6 +128,11 @@ public class ManejoEventos {
         if (e == null) {
             return false;
         }
+
+        if (!usuarioCreador(usuario, codigo)) {
+            return false;
+        }
+
         EventoReligioso evt = (EventoReligioso) e;
 
         evt.setTitulo(titulo);
@@ -146,6 +151,10 @@ public class ManejoEventos {
         Evento e = buscarEvento(codigo);
 
         if (e == null) {
+            return false;
+        }
+
+        if (!usuarioCreador(usuario, codigo)) {
             return false;
         }
 
@@ -177,6 +186,10 @@ public class ManejoEventos {
             return false;
         }
 
+        if (!usuarioCreador(usuario, codigo)) {
+            return false;
+        }
+
         EventoDeportivo evt = (EventoDeportivo) e;
 
         evt.setTitulo(titulo);
@@ -201,35 +214,52 @@ public class ManejoEventos {
         return true;
     }
 
-    public boolean actualizarJugadoresDeportivo(Usuarios.Usuario usuario, String codigo,
+    public boolean actualizarJugadoresDeportivo(Usuario usuario, String codigo,
             String[] jugadores1, String[] jugadores2) {
         Evento evt = buscarEvento(codigo);
-        
-        if (evt == null || !(evt instanceof Eventos.EventoDeportivo)) {
+        if (evt == null || !(evt instanceof EventoDeportivo)) {
             return false;
         }
 
-        Eventos.EventoDeportivo d = (Eventos.EventoDeportivo) evt;
+        if (!usuarioCreador(usuario, codigo)) {
+            return false;
+        }
 
+        EventoDeportivo d = (EventoDeportivo) evt;
         d.getJugadoresEquipo1().clear();
         d.getJugadoresEquipo2().clear();
-
         if (jugadores1 != null) {
             for (String j : jugadores1) {
-                if (j != null) {
-                    String nombre = j.trim();
-                    if (!nombre.isEmpty()) {
-                        d.agregarJugadorEquipo1(nombre);
-                    }
+                if (j != null && !j.trim().isEmpty()) {
+                    d.agregarJugadorEquipo1(j.trim());
                 }
             }
         }
         if (jugadores2 != null) {
             for (String j : jugadores2) {
-                if (j != null) {
-                    String nombre = j.trim();
+                if (j != null && !j.trim().isEmpty()) {
+                    d.agregarJugadorEquipo2(j.trim());
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean actualizarStaffMusical(Usuario usuario, String codigo, String[] staff) {
+        Evento evt = buscarEvento(codigo);
+        if (evt == null || !(evt instanceof EventoMusical)) {
+            return false;
+        }
+
+        EventoMusical m = (EventoMusical) evt;
+        m.getStaffTecnico().clear();
+
+        if (staff != null) {
+            for (String s : staff) {
+                if (s != null) {
+                    String nombre = s.trim();
                     if (!nombre.isEmpty()) {
-                        d.agregarJugadorEquipo2(nombre);
+                        m.agregarStaff(nombre);
                     }
                 }
             }

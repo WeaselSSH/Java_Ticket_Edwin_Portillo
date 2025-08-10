@@ -116,8 +116,8 @@ public abstract class Evento {
         String estado = (cancelado ? "\nEvento cancelado" : "")
                 + (realizado ? "\nEvento realizado" : "");
 
-        String multaTexto = (multa > 0)
-                ? "\nMulta: L." + multa + (multaPagada ? " (pagada)" : " (pendiente)")
+        String multaTexto = (cancelado && multa > 0)
+                ? "\nMulta: L." + String.format("%.2f", multa) + (multaPagada ? " (pagada)" : " (pendiente)")
                 : "";
 
         return base + estado + multaTexto;

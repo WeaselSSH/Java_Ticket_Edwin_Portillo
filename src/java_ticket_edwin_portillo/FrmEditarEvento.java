@@ -3,6 +3,7 @@ package java_ticket_edwin_portillo;
 import Eventos.Evento;
 import Eventos.EventoDeportivo;
 import Eventos.EventoMusical;
+import Eventos.EventoReligioso;
 import Tipos.TipoMusica;
 import Tipos.TipoDeporte;
 import Usuarios.Administrador;
@@ -120,11 +121,23 @@ public class FrmEditarEvento extends BaseFrame {
         JButton btnStaff = crearBoton("Ingresar Staff", 110, 40, 190, 25);
         panelMusical.add(btnStaff);
 
+        //PANEL RELIGIOSO 
+        JPanel panelReligioso = new JPanel(null);
+        panelReligioso.setBounds(35, 280, 400, 90);
+        panelCentro.add(panelReligioso);
+
+        JLabel lblConvertidos = crearLabel("Cantidad de convertidos:", 0, 0, 160, 25, Font.BOLD, 12f);
+        panelReligioso.add(lblConvertidos);
+
+        JTextField txtConvertidos = crearTextField(160, 0, 180, 25);
+        panelReligioso.add(txtConvertidos);
+
         //combobox
         cboTipo.addActionListener(e -> {
             String tipo = (String) cboTipo.getSelectedItem();
             panelDeportivo.setVisible("DEPORTIVO".equals(tipo));
             panelMusical.setVisible("MUSICAL".equals(tipo));
+            panelReligioso.setVisible("RELIGIOSO".equals(tipo));
         });
 
         // BOTONES
@@ -183,9 +196,10 @@ public class FrmEditarEvento extends BaseFrame {
             cboTipo.setSelectedItem(tipo);
             panelDeportivo.setVisible(false);
             panelMusical.setVisible(false);
+            panelReligioso.setVisible(false);
 
             switch (tipo) {
-                case "DEPORTIVO": {
+                case "DEPORTIVO":
                     panelDeportivo.setVisible(true);
                     EventoDeportivo dep = (EventoDeportivo) evt;
 
@@ -194,17 +208,19 @@ public class FrmEditarEvento extends BaseFrame {
 
                     cboDeporte.setSelectedItem(dep.getTipoDeporte());
                     break;
-                }
-                case "MUSICAL": {
-                    panelMusical.setVisible(true);
-                    EventoMusical m = (EventoMusical) evt;
 
-                    cboMusica.setSelectedItem(m.getTipoMusica());
+                case "MUSICAL":
+                    panelMusical.setVisible(true);
+                    EventoMusical mus = (EventoMusical) evt;
+
+                    cboMusica.setSelectedItem(mus.getTipoMusica());
                     break;
-                }
-                case "RELIGIOSO": {
+
+                case "RELIGIOSO":
+                    panelReligioso.setVisible(true);
+                    EventoReligioso reli = (EventoReligioso) evt;
+                    txtConvertidos.setText(String.valueOf(reli.getCantidadConvertidos()));
                     break;
-                }
                 default:
                     JOptionPane.showMessageDialog(this, "Tipo desconocido.");
             }
@@ -220,7 +236,7 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             Evento evt = manejoEventos.buscarEvento(codigo);
-            if (evt == null) {
+            if (evt == null || !(evt instanceof EventoDeportivo)) {
                 JOptionPane.showMessageDialog(this, "Error: evento no existe.");
                 return;
             }
@@ -266,8 +282,150 @@ public class FrmEditarEvento extends BaseFrame {
             }
         });
 
-        btnGuardar.addActionListener(e -> {
+        btnStaff.addActionListener(e -> {
+            String codigo = txtCodigo.getText().trim();
+            if (codigo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Error: ingrese el código del evento primero.");
+                return;
+            }
 
+            Evento evt = manejoEventos.buscarEvento(codigo);
+            if (evt == null || !(evt instanceof EventoMusical) ) {
+                JOptionPane.showMessageDialog(this, "Error: evento no existe.");
+                return;
+            }
+
+            EventoMusical m = (EventoMusical) evt;
+
+            FrmStaff fs = new FrmStaff();
+            fs.configurar(m.getStaffTecnico().toArray(new String[0]));
+            fs.setVisible(true);
+
+            if (!fs.guardado()) {
+                return;
+            }
+
+            boolean exitoso = manejoEventos.actualizarStaffMusical(
+                    manejoUsuarios.getUsuarioLogeado(),
+                    codigo,
+                    fs.getResultadoStaff()
+            );
+
+            JOptionPane.showMessageDialog(this, exitoso ? "Staff actualizado."
+                    : "Error: no se pudo actualizar el staff.");
+        });
+
+        btnGuardar.addActionListener(e -> {
+            String codigo = txtCodigo.getText().trim();
+            if (codigo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese un código.");
+                return;
+            }
+            
+            Evento evt = manejoEventos.buscarEvento(codigo);
+            if (evt == null) {
+                JOptionPane.showMessageDialog(this, "Error: este evento no existe.");
+                return;
+            }
+
+            String titulo = txtTitulo.getText().trim();
+            String desc = txtDescripcion.getText().trim();
+            Calendar fecha = dateChooser.getCalendar();
+            if (titulo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese título.");
+                return;
+            }
+            if (fecha == null) {
+                JOptionPane.showMessageDialog(this, "Seleccione fecha.");
+                return;
+            }
+
+            double renta;
+            try {
+                renta = Double.parseDouble(txtMontoRenta.getText().trim());
+                if (renta < 0) {
+                    JOptionPane.showMessageDialog(this, "Monto inválido.");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Monto inválido.");
+                return;
+            }
+
+            boolean exitoso = false;
+            String tipoReal = evt.getTipo().toUpperCase();
+
+            switch (tipoReal) {
+                case "DEPORTIVO": {
+                    String eq1 = txtEquipo1.getText().trim();
+                    String eq2 = txtEquipo2.getText().trim();
+                    if (eq1.isEmpty() || eq2.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Ingrese ambos equipos.");
+                        return;
+                    }
+                    if (eq1.equalsIgnoreCase(eq2)) {
+                        JOptionPane.showMessageDialog(this, "Los equipos no pueden ser iguales.");
+                        return;
+                    }
+
+                    TipoDeporte td = (TipoDeporte) cboDeporte.getSelectedItem();
+                    if (td == null) {
+                        JOptionPane.showMessageDialog(this, "Seleccione tipo de deporte.");
+                        return;
+                    }
+
+                    EventoDeportivo d = (EventoDeportivo) evt;
+                    String j1[] = d.getJugadoresEquipo1().toArray(new String[0]);
+                    String j2[] = d.getJugadoresEquipo2().toArray(new String[0]);
+
+                    exitoso = manejoEventos.editarEventoDeportivo(
+                            manejoUsuarios.getUsuarioLogeado(),
+                            codigo, titulo, desc, fecha, renta,
+                            eq1, eq2, td, j1, j2
+                    );
+                    break;
+                }
+                case "MUSICAL": {
+                    TipoMusica tm = (TipoMusica) cboMusica.getSelectedItem();
+                    if (tm == null) {
+                        JOptionPane.showMessageDialog(this, "Seleccione tipo de música.");
+                        return;
+                    }
+
+                    EventoMusical m = (EventoMusical) evt;
+                    java.util.ArrayList<String> staff = new java.util.ArrayList<>(m.getStaffTecnico());
+
+                    exitoso = manejoEventos.editarEventoMusical(
+                            manejoUsuarios.getUsuarioLogeado(),
+                            codigo, titulo, desc, fecha, renta, tm, staff
+                    );
+                    break;
+                }
+                case "RELIGIOSO": {
+                    int convertidos;
+                    try {
+                        convertidos = Integer.parseInt(txtConvertidos.getText().trim());
+                        if (convertidos < 0) {
+                            JOptionPane.showMessageDialog(this, "Convertidos inválido.");
+                            return;
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Convertidos inválido.");
+                        return;
+                    }
+
+                    exitoso = manejoEventos.editarEventoReligioso(
+                            manejoUsuarios.getUsuarioLogeado(),
+                            codigo, titulo, desc, fecha, renta, convertidos
+                    );
+                    break;
+                }
+                default:
+                    JOptionPane.showMessageDialog(this, "Tipo desconocido.");
+                    return;
+            }
+
+            JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados." : "No se pudo guardar.");
         });
 
         btnRegresar.addActionListener(e -> {
