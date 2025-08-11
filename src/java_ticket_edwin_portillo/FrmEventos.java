@@ -1,7 +1,16 @@
 package java_ticket_edwin_portillo;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class FrmEventos extends BaseFrame {
 
@@ -13,19 +22,31 @@ public class FrmEventos extends BaseFrame {
 
     @Override
     protected void initComponents() {
-        //panel principal
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        // Paneles + fondo
+        JPanel panelPrincipal = new JPanel(new BorderLayout()) {
+            final Image bg = new ImageIcon(
+                    getClass().getResource("/Imagenes/bg_dark_1920x1080.png")
+            ).getImage();
 
-        //otros paneles
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg, 0, 0, getWidth(), getHeight(), this); // escalado al tamaño
+            }
+        };
+
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        panelNorte.setOpaque(false);
         panelNorte.setPreferredSize(new Dimension(0, 60));
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
 
         JPanel panelCentro = new JPanel(null);
+        panelCentro.setOpaque(false);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de ui
-        JLabel lblTitulo = crearLabel("ADMINISTRACIÓN DE EVENTOS", 0, 0, 0, 0, Font.BOLD, 18f);
+        JLabel lblTitulo = crearLabel("Administración de Eventos", 0, 0, 0, 0, Font.BOLD, 18f);
+        lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
         JButton btnCrear = crearBoton("Crear Evento", 82, 0, 245, 40);

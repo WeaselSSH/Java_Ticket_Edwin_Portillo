@@ -1,9 +1,14 @@
 package java_ticket_edwin_portillo;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -17,27 +22,42 @@ public class FrmCrearUsuario extends BaseFrame {
     private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmCrearUsuario() {
-        super("Crear Usuario", 450, 360);
+        super("Crear Usuario", 450, 380);
     }
 
     @Override
     protected void initComponents() {
-        //paneles
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        //panel principal
+        JPanel panelPrincipal = new JPanel(new BorderLayout()) {
+            final Image bg = new ImageIcon(
+                    getClass().getResource("/Imagenes/bg_dark_1920x1080.png")
+            ).getImage();
 
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        //resto de paneles
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
-        panelNorte.setPreferredSize(new Dimension(0, 50));
+        panelNorte.setPreferredSize(new Dimension(0, 60));
+        panelNorte.setOpaque(false);
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
 
         JPanel panelCentro = new JPanel(null);
+        panelCentro.setOpaque(false);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         JPanel panelSur = new JPanel(null);
         panelSur.setPreferredSize(new Dimension(0, 80));
+        panelSur.setOpaque(false);
         panelPrincipal.add(panelSur, BorderLayout.SOUTH);
 
         //resto de ui
-        JLabel lblTitulo = crearLabel("CREAR USUARIO", 0, 0, 0, 0, Font.BOLD, 22f);
+        JLabel lblTitulo = crearLabel("Crear Usuario", 0, 0, 0, 0, Font.BOLD, 21f);
+        lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
         JLabel lblRol = crearLabel("Rol:", 40, 10, 100, 25, Font.BOLD, 14f);
@@ -64,6 +84,10 @@ public class FrmCrearUsuario extends BaseFrame {
 
         JPasswordField txtContrasenia = new JPasswordField();
         txtContrasenia.setBounds(190, 132, 200, 22);
+        txtContrasenia.setBackground(Color.decode("#1A2332"));
+        txtContrasenia.setForeground(Color.decode("#E6EDF7"));
+        txtContrasenia.setCaretColor(Color.decode("#E6EDF7"));
+        txtContrasenia.setBorder(BorderFactory.createLineBorder(Color.decode("#374151")));
         panelCentro.add(txtContrasenia);
 
         JLabel lblEdad = crearLabel("Edad:", 40, 170, 150, 25, Font.BOLD, 14f);
