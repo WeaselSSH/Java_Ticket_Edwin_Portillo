@@ -26,24 +26,38 @@ public class FrmEditarEvento extends BaseFrame {
 
     @Override
     protected void initComponents() {
-        //paneles
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        //panel principal
+        JPanel panelPrincipal = new JPanel(new BorderLayout()) {
+            final Image bg = new ImageIcon(
+                    getClass().getResource("/Imagenes/bg_dark_1920x1080.png")
+            ).getImage();
 
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        //resto de paneles
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
         panelNorte.setPreferredSize(new Dimension(0, 60));
+        panelNorte.setOpaque(false);
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
 
         JPanel panelCentro = new JPanel(null);
+        panelCentro.setOpaque(false);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de ui
-        JLabel lblTitulo = crearLabel("EDITAR EVENTO", 0, 0, 300, 40, Font.BOLD, 20f);
+        JLabel lblTitulo = crearLabel("Editar Evento", 0, 0, 0, 0, Font.BOLD, 21f);
+        lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
         JLabel lblCodigo = crearLabel("Código del evento:", 35, 0, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblCodigo);
 
-        JTextField txtCodigo = crearTextField(170, 0, 170, 25);
+        JTextField txtCodigo = crearTextField(175, 0, 170, 25);
         panelCentro.add(txtCodigo);
 
         JButton btnCargar = crearBoton("Cargar", 345, 0, 90, 25);
@@ -84,6 +98,7 @@ public class FrmEditarEvento extends BaseFrame {
         // PANEL DEPORTIVO
         JPanel panelDeportivo = new JPanel(null);
         panelDeportivo.setBounds(35, 280, 400, 150);
+        panelDeportivo.setOpaque(false);
         panelCentro.add(panelDeportivo);
 
         JLabel lblEquipo1 = crearLabel("Equipo 1:", 0, 0, 100, 25, Font.BOLD, 12f);
@@ -110,6 +125,7 @@ public class FrmEditarEvento extends BaseFrame {
         // PANEL MUSICAL
         JPanel panelMusical = new JPanel(null);
         panelMusical.setBounds(35, 280, 400, 90);
+        panelMusical.setOpaque(false);
         panelCentro.add(panelMusical);
 
         JLabel lblTipoMusica = crearLabel("Tipo de Música:", 0, 0, 120, 25, Font.BOLD, 12f);
@@ -124,6 +140,7 @@ public class FrmEditarEvento extends BaseFrame {
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
         panelReligioso.setBounds(35, 280, 400, 90);
+        panelReligioso.setOpaque(false);
         panelCentro.add(panelReligioso);
 
         JLabel lblConvertidos = crearLabel("Cantidad de convertidos:", 0, 0, 160, 25, Font.BOLD, 12f);
@@ -290,7 +307,7 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             Evento evt = manejoEventos.buscarEvento(codigo);
-            if (evt == null || !(evt instanceof EventoMusical) ) {
+            if (evt == null || !(evt instanceof EventoMusical)) {
                 JOptionPane.showMessageDialog(this, "Error: evento no existe.");
                 return;
             }
@@ -321,7 +338,7 @@ public class FrmEditarEvento extends BaseFrame {
                 JOptionPane.showMessageDialog(this, "Ingrese un código.");
                 return;
             }
-            
+
             Evento evt = manejoEventos.buscarEvento(codigo);
             if (evt == null) {
                 JOptionPane.showMessageDialog(this, "Error: este evento no existe.");
@@ -433,6 +450,9 @@ public class FrmEditarEvento extends BaseFrame {
             this.dispose();
         });
 
+        panelDeportivo.setVisible(true);
+        panelMusical.setVisible(false);
+        panelReligioso.setVisible(false);
         setContentPane(panelPrincipal);
     }
 
@@ -440,3 +460,7 @@ public class FrmEditarEvento extends BaseFrame {
         new FrmEditarEvento().setVisible(true);
     }
 }
+
+//RECUERDA VALIDAR QUE EL TIPO DE EVENTO SEA EL MISMOOOOO (creo)
+//EQUIPO INGRESAR NO SIRVEEEEEEE
+//VER EVENTO LE FALTAN CAMPOS QQUE MOSTRAR

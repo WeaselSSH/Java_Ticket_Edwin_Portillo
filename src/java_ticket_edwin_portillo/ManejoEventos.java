@@ -38,12 +38,27 @@ public class ManejoEventos {
     }
 
     private boolean usuarioCreador(Usuario usuario, String codigo) {
+        if (codigo == null) {
+            return false;
+        }
+
         if (usuario.getRol().equalsIgnoreCase("administrador")) {
-            return ((Administrador) usuario).getEventosCreados().contains(codigo);
+            for (String c : ((Administrador) usuario).getEventosCreados()) {
+                if (c != null && c.equalsIgnoreCase(codigo)) {
+                    return true;
+                }
+            }
+            return false;
         }
+
         if (usuario.getRol().equalsIgnoreCase("contenido")) {
-            return ((Contenido) usuario).getEventosCreados().contains(codigo);
+            for (String c : ((Contenido) usuario).getEventosCreados()) {
+                if (c != null && c.equalsIgnoreCase(codigo)) {
+                    return true;
+                }
+            }
         }
+
         return false;
     }
 
@@ -248,6 +263,10 @@ public class ManejoEventos {
     public boolean actualizarStaffMusical(Usuario usuario, String codigo, String[] staff) {
         Evento evt = buscarEvento(codigo);
         if (evt == null || !(evt instanceof EventoMusical)) {
+            return false;
+        }
+
+        if (!usuarioCreador(usuario, codigo)) {
             return false;
         }
 

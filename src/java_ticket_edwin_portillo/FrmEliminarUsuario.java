@@ -10,6 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import Usuarios.Usuario;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class FrmEliminarUsuario extends BaseFrame {
 
@@ -21,19 +24,32 @@ public class FrmEliminarUsuario extends BaseFrame {
 
     @Override
     protected void initComponents() {
+        //panel principal
+        JPanel panelPrincipal = new JPanel(new BorderLayout()) {
+            final Image bg = new ImageIcon(
+                    getClass().getResource("/Imagenes/bg_dark_1920x1080.png")
+            ).getImage();
 
-        //PANELES
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
 
+        //resto de paneles
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
-        panelNorte.setPreferredSize(new Dimension(0, 40));
+        panelNorte.setPreferredSize(new Dimension(0, 60));
+        panelNorte.setOpaque(false);
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
 
         JPanel panelCentro = new JPanel(null);
+        panelCentro.setOpaque(false);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
-        //UI GENERAL
-        JLabel lblTitulo = crearLabel("ELIMINAR USUARIO", 0, 0, 300, 40, Font.BOLD, 20f);
+        //resto de ui
+        JLabel lblTitulo = crearLabel("Eliminar Usuario", 0, 0, 0, 0, Font.BOLD, 21f);
+        lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
         JLabel lblUsuario = crearLabel("Usuario a eliminar:", 40, 25, 150, 25, Font.BOLD, 14f);
