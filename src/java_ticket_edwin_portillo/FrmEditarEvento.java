@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class FrmEditarEvento extends BaseFrame {
 
@@ -23,7 +24,7 @@ public class FrmEditarEvento extends BaseFrame {
 
     private JPanel panelJugadores;
     private JTable tablaJugadores;
-    private DefaultTableModel modeloJug;
+    private DefaultTableModel modeloJugador;
 
     public FrmEditarEvento() {
         super("Editar Evento", 920, 630);
@@ -132,8 +133,8 @@ public class FrmEditarEvento extends BaseFrame {
                 tablaJugadores.getCellEditor().stopCellEditing();
             }
 
-            int req = cupoPorDeporte((TipoDeporte) cboDeporte.getSelectedItem());
-            reconstruirTablaJugadores(req, txtEquipo1.getText(), txtEquipo2.getText());
+            int jugRequerido = cupoDeporte((TipoDeporte) cboDeporte.getSelectedItem());
+            reconstruirTablaJugadores(jugRequerido, txtEquipo1.getText(), txtEquipo2.getText());
         });
 
         //panel jugadores
@@ -142,7 +143,7 @@ public class FrmEditarEvento extends BaseFrame {
         panelJugadores.setBounds(470, 0, 400, 200);
         panelCentro.add(panelJugadores);
 
-        modeloJug = new DefaultTableModel(new Object[]{"#", "Equipo 1", "Equipo 2"}, 0) {
+        modeloJugador = new DefaultTableModel(new Object[]{"#", "Equipo 1", "Equipo 2"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
                 return col > 0;
@@ -153,11 +154,11 @@ public class FrmEditarEvento extends BaseFrame {
                 return columnIndex == 0 ? Integer.class : String.class;
             }
         };
-        tablaJugadores = new JTable(modeloJug);
+        tablaJugadores = new JTable(modeloJugador);
         tablaJugadores.setForeground(Color.decode("#1A2332"));
-        JScrollPane spJug = new JScrollPane(tablaJugadores);
-        spJug.setBounds(0, 0, 400, 200);
-        panelJugadores.add(spJug);
+        JScrollPane spJugadores = new JScrollPane(tablaJugadores);
+        spJugadores.setBounds(0, 0, 400, 200);
+        panelJugadores.add(spJugadores);
         tablaJugadores.getColumnModel().getColumn(0).setMaxWidth(50);
         tablaJugadores.getColumnModel().getColumn(0).setMinWidth(40);
         tablaJugadores.setRowHeight(22);
@@ -341,15 +342,15 @@ public class FrmEditarEvento extends BaseFrame {
                         return;
                     }
 
-                    TipoDeporte td = (TipoDeporte) cboDeporte.getSelectedItem();
-                    if (td == null) {
+                    TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
+                    if (tipoDeporte == null) {
                         JOptionPane.showMessageDialog(this, "Seleccione tipo de deporte.");
                         return;
                     }
 
-                    String[][] jug;
+                    String jugadores[][];
                     try {
-                        jug = leerJugadoresTabla();
+                        jugadores = leerJugadoresTabla();
                     } catch (IllegalArgumentException | IllegalStateException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage());
                         return;
@@ -358,8 +359,8 @@ public class FrmEditarEvento extends BaseFrame {
                     exitoso = manejoEventos.editarEventoDeportivo(
                             manejoUsuarios.getUsuarioLogeado(),
                             codigo, titulo, desc, fecha, renta,
-                            eq1, eq2, td,
-                            jug[0], jug[1]
+                            eq1, eq2, tipoDeporte,
+                            jugadores[0], jugadores[1]
                     );
                     break;
                 }
@@ -413,12 +414,12 @@ public class FrmEditarEvento extends BaseFrame {
     }
 
     private void reconstruirTablaJugadores(int req, String eq1, String eq2) {
-        String h1 = (eq1 == null || eq1.isBlank()) ? "Equipo 1" : eq1.trim();
-        String h2 = (eq2 == null || eq2.isBlank()) ? "Equipo 2" : eq2.trim();
+        String tituloEquipo1 = eq1.trim();
+        String tituloEquipo2 = eq2.trim();
 
-        DefaultTableModel m = new DefaultTableModel(new Object[]{"#", h1, h2}, 0) {
+        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"#", tituloEquipo1, tituloEquipo2}, 0) {
             @Override
-            public boolean isCellEditable(int r, int c) {
+            public boolean isCellEditable(int f, int c) {
                 return c > 0;
             }
 
@@ -428,12 +429,12 @@ public class FrmEditarEvento extends BaseFrame {
             }
         };
         for (int i = 0; i < req; i++) {
-            m.addRow(new Object[]{i + 1, "", ""});
+            modelo.addRow(new Object[]{i + 1, "", ""});
         }
 
-        tablaJugadores.setModel(m);
-        modeloJug = m;
-        var col0 = tablaJugadores.getColumnModel().getColumn(0);
+        tablaJugadores.setModel(modelo);
+        modeloJugador = modelo;
+        TableColumn col0 = tablaJugadores.getColumnModel().getColumn(0);
         col0.setMaxWidth(50);
         col0.setMinWidth(40);
         tablaJugadores.setRowHeight(22);
@@ -441,22 +442,16 @@ public class FrmEditarEvento extends BaseFrame {
     }
 
     private void cargarJugadores(EventoDeportivo dep) {
-        int req = cupoPorDeporte(dep.getTipoDeporte());
-        reconstruirTablaJugadores(req, dep.getEquipo1(), dep.getEquipo2());
+        int jugadoresRequeridos = cupoDeporte(dep.getTipoDeporte());
+        reconstruirTablaJugadores(jugadoresRequeridos, dep.getEquipo1(), dep.getEquipo2());
 
         int n1 = (dep.getJugadoresEquipo1() != null) ? dep.getJugadoresEquipo1().size() : 0;
         int n2 = (dep.getJugadoresEquipo2() != null) ? dep.getJugadoresEquipo2().size() : 0;
-        for (int i = 0; i < req; i++) {
+        for (int i = 0; i < jugadoresRequeridos; i++) {
             String j1 = (i < n1 && dep.getJugadoresEquipo1().get(i) != null) ? dep.getJugadoresEquipo1().get(i).trim() : "";
             String j2 = (i < n2 && dep.getJugadoresEquipo2().get(i) != null) ? dep.getJugadoresEquipo2().get(i).trim() : "";
-            modeloJug.setValueAt(j1, i, 1);
-            modeloJug.setValueAt(j2, i, 2);
-        }
-    }
-
-    private void detenerEdicionTabla() {
-        if (tablaJugadores != null && tablaJugadores.isEditing()) {
-            tablaJugadores.getCellEditor().stopCellEditing();
+            modeloJugador.setValueAt(j1, i, 1);
+            modeloJugador.setValueAt(j2, i, 2);
         }
     }
 
@@ -464,19 +459,14 @@ public class FrmEditarEvento extends BaseFrame {
         if (tablaJugadores != null && tablaJugadores.isEditing()) {
             tablaJugadores.getCellEditor().stopCellEditing();
         }
-        int n = (modeloJug != null) ? modeloJug.getRowCount() : 0;
+        int n = (modeloJugador != null) ? modeloJugador.getRowCount() : 0;
 
-        // Si NO quieres exigir al menos 1 fila, borra este if
-        if (n == 0) {
-            throw new IllegalStateException("Agrega al menos una fila de jugadores.");
-        }
-
-        String[] j1 = new String[n];
-        String[] j2 = new String[n];
+        String j1[] = new String[n];
+        String j2[] = new String[n];
 
         for (int i = 0; i < n; i++) {
-            String s1 = (modeloJug.getValueAt(i, 1) == null) ? "" : modeloJug.getValueAt(i, 1).toString().trim();
-            String s2 = (modeloJug.getValueAt(i, 2) == null) ? "" : modeloJug.getValueAt(i, 2).toString().trim();
+            String s1 = modeloJugador.getValueAt(i, 1).toString().trim();
+            String s2 = modeloJugador.getValueAt(i, 2).toString().trim();
 
             if (s1.isEmpty() || s2.isEmpty()) {
                 throw new IllegalArgumentException("Fila " + (i + 1) + " Incompleta: ambos jugadores son obligatorios.");
@@ -487,7 +477,7 @@ public class FrmEditarEvento extends BaseFrame {
         return new String[][]{j1, j2};
     }
 
-    private int cupoPorDeporte(TipoDeporte d) {
+    private int cupoDeporte(TipoDeporte d) {
         if (d == null) {
             return 0;
         }
