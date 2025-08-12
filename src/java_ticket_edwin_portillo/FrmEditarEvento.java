@@ -14,14 +14,19 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
+import javax.swing.table.DefaultTableModel;
 
 public class FrmEditarEvento extends BaseFrame {
 
     private final ManejoEventos manejoEventos = ManejoEventos.getInstancia();
     private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
+    private JPanel panelJugadores;
+    private JTable tablaJugadores;
+    private DefaultTableModel modeloJug;
+
     public FrmEditarEvento() {
-        super("Editar Evento", 480, 630);
+        super("Editar Evento", 920, 630);
     }
 
     @Override
@@ -41,7 +46,7 @@ public class FrmEditarEvento extends BaseFrame {
 
         //resto de paneles
         JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
-        panelNorte.setPreferredSize(new Dimension(0, 60));
+        panelNorte.setPreferredSize(new Dimension(0, 75));
         panelNorte.setOpaque(false);
         panelPrincipal.add(panelNorte, BorderLayout.NORTH);
 
@@ -50,7 +55,7 @@ public class FrmEditarEvento extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de ui
-        JLabel lblTitulo = crearLabel("Editar Evento", 0, 0, 0, 0, Font.BOLD, 21f);
+        JLabel lblTitulo = crearLabel("Editar Evento", 0, 0, 0, 0, Font.BOLD, 24f);
         lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
@@ -119,8 +124,44 @@ public class FrmEditarEvento extends BaseFrame {
         JComboBox<TipoDeporte> cboDeporte = crearComboBox(TipoDeporte.values(), 130, 80, 170, 25);
         panelDeportivo.add(cboDeporte);
 
-        JButton btnJugadores = crearBoton("Ingresar Jugadores", 110, 125, 190, 25);
-        panelDeportivo.add(btnJugadores);
+        cboDeporte.addActionListener(e -> {
+            if (!panelJugadores.isVisible()) {
+                return;
+            }
+            if (tablaJugadores.isEditing()) {
+                tablaJugadores.getCellEditor().stopCellEditing();
+            }
+
+            int req = cupoPorDeporte((TipoDeporte) cboDeporte.getSelectedItem());
+            reconstruirTablaJugadores(req, txtEquipo1.getText(), txtEquipo2.getText());
+        });
+
+        //panel jugadores
+        panelJugadores = new JPanel(null);
+        panelJugadores.setOpaque(false);
+        panelJugadores.setBounds(470, 0, 400, 200);
+        panelCentro.add(panelJugadores);
+
+        modeloJug = new DefaultTableModel(new Object[]{"#", "Equipo 1", "Equipo 2"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col > 0;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? Integer.class : String.class;
+            }
+        };
+        tablaJugadores = new JTable(modeloJug);
+        tablaJugadores.setForeground(Color.decode("#1A2332"));
+        JScrollPane spJug = new JScrollPane(tablaJugadores);
+        spJug.setBounds(0, 0, 400, 200);
+        panelJugadores.add(spJug);
+        tablaJugadores.getColumnModel().getColumn(0).setMaxWidth(50);
+        tablaJugadores.getColumnModel().getColumn(0).setMinWidth(40);
+        tablaJugadores.setRowHeight(22);
+        tablaJugadores.setFillsViewportHeight(true);
 
         // PANEL MUSICAL
         JPanel panelMusical = new JPanel(null);
@@ -133,9 +174,6 @@ public class FrmEditarEvento extends BaseFrame {
 
         JComboBox<TipoMusica> cboMusica = crearComboBox(TipoMusica.values(), 130, 0, 170, 25);
         panelMusical.add(cboMusica);
-
-        JButton btnStaff = crearBoton("Ingresar Staff", 110, 40, 190, 25);
-        panelMusical.add(btnStaff);
 
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
@@ -152,9 +190,11 @@ public class FrmEditarEvento extends BaseFrame {
         //combobox
         cboTipo.addActionListener(e -> {
             String tipo = (String) cboTipo.getSelectedItem();
+            boolean esDeportivo = "DEPORTIVO".equals(tipo);
             panelDeportivo.setVisible("DEPORTIVO".equals(tipo));
             panelMusical.setVisible("MUSICAL".equals(tipo));
             panelReligioso.setVisible("RELIGIOSO".equals(tipo));
+            panelJugadores.setVisible(esDeportivo);
         });
 
         // BOTONES
@@ -210,10 +250,12 @@ public class FrmEditarEvento extends BaseFrame {
             txtMontoRenta.setText(String.valueOf(evt.getMontoRenta()));
 
             String tipo = evt.getTipo().toUpperCase();
+            boolean esDeportivo = "DEPORTIVO".equals(tipo);
             cboTipo.setSelectedItem(tipo);
             panelDeportivo.setVisible(false);
             panelMusical.setVisible(false);
             panelReligioso.setVisible(false);
+            panelJugadores.setVisible(esDeportivo);
 
             switch (tipo) {
                 case "DEPORTIVO":
@@ -224,6 +266,9 @@ public class FrmEditarEvento extends BaseFrame {
                     txtEquipo2.setText(dep.getEquipo2());
 
                     cboDeporte.setSelectedItem(dep.getTipoDeporte());
+                    cargarJugadores(dep);
+                    panelJugadores.setVisible(true);
+
                     break;
 
                 case "MUSICAL":
@@ -241,95 +286,6 @@ public class FrmEditarEvento extends BaseFrame {
                 default:
                     JOptionPane.showMessageDialog(this, "Tipo desconocido.");
             }
-        });
-
-        btnJugadores.addActionListener(e -> {
-
-            String codigo = txtCodigo.getText().trim();
-
-            if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Error: ingrese el código del evento primero.");
-                return;
-            }
-
-            Evento evt = manejoEventos.buscarEvento(codigo);
-            if (evt == null || !(evt instanceof EventoDeportivo)) {
-                JOptionPane.showMessageDialog(this, "Error: evento no existe.");
-                return;
-            }
-
-            TipoDeporte dep = (TipoDeporte) cboDeporte.getSelectedItem();
-            String eq1 = txtEquipo1.getText().trim();
-            String eq2 = txtEquipo2.getText().trim();
-
-            if (eq1.isEmpty() || eq2.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Error: Ingrese ambos equipos.");
-                return;
-            }
-            if (eq1.equalsIgnoreCase(eq2)) {
-                JOptionPane.showMessageDialog(this, "Error: Los equipos no pueden ser iguales.");
-                return;
-            }
-
-            EventoDeportivo d = (EventoDeportivo) evt;
-
-            FrmJugadores fj = new FrmJugadores();
-
-            fj.configurar(dep, eq1, eq2,
-                    d.getJugadoresEquipo1().toArray(new String[0]),
-                    d.getJugadoresEquipo2().toArray(new String[0]));
-
-            fj.setVisible(true);
-
-            if (!fj.guardado()) {
-                return;
-            }
-
-            boolean exitoso = manejoEventos.actualizarJugadoresDeportivo(
-                    manejoUsuarios.getUsuarioLogeado(),
-                    codigo,
-                    fj.getResultadoEquipo1(),
-                    fj.getResultadoEquipo2()
-            );
-
-            if (exitoso) {
-                JOptionPane.showMessageDialog(this, "Jugadores actualizados.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error: no se pudo actualizar los jugadores.");
-            }
-        });
-
-        btnStaff.addActionListener(e -> {
-            String codigo = txtCodigo.getText().trim();
-            if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Error: ingrese el código del evento primero.");
-                return;
-            }
-
-            Evento evt = manejoEventos.buscarEvento(codigo);
-            if (evt == null || !(evt instanceof EventoMusical)) {
-                JOptionPane.showMessageDialog(this, "Error: evento no existe.");
-                return;
-            }
-
-            EventoMusical m = (EventoMusical) evt;
-
-            FrmStaff fs = new FrmStaff();
-            fs.configurar(m.getStaffTecnico().toArray(new String[0]));
-            fs.setVisible(true);
-
-            if (!fs.guardado()) {
-                return;
-            }
-
-            boolean exitoso = manejoEventos.actualizarStaffMusical(
-                    manejoUsuarios.getUsuarioLogeado(),
-                    codigo,
-                    fs.getResultadoStaff()
-            );
-
-            JOptionPane.showMessageDialog(this, exitoso ? "Staff actualizado."
-                    : "Error: no se pudo actualizar el staff.");
         });
 
         btnGuardar.addActionListener(e -> {
@@ -391,17 +347,23 @@ public class FrmEditarEvento extends BaseFrame {
                         return;
                     }
 
-                    EventoDeportivo d = (EventoDeportivo) evt;
-                    String j1[] = d.getJugadoresEquipo1().toArray(new String[0]);
-                    String j2[] = d.getJugadoresEquipo2().toArray(new String[0]);
+                    String[][] jug;
+                    try {
+                        jug = leerJugadoresTabla();
+                    } catch (IllegalArgumentException | IllegalStateException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
+                        return;
+                    }
 
                     exitoso = manejoEventos.editarEventoDeportivo(
                             manejoUsuarios.getUsuarioLogeado(),
                             codigo, titulo, desc, fecha, renta,
-                            eq1, eq2, td, j1, j2
+                            eq1, eq2, td,
+                            jug[0], jug[1]
                     );
                     break;
                 }
+
                 case "MUSICAL": {
                     TipoMusica tm = (TipoMusica) cboMusica.getSelectedItem();
                     if (tm == null) {
@@ -409,13 +371,6 @@ public class FrmEditarEvento extends BaseFrame {
                         return;
                     }
 
-                    EventoMusical m = (EventoMusical) evt;
-                    java.util.ArrayList<String> staff = new java.util.ArrayList<>(m.getStaffTecnico());
-
-                    exitoso = manejoEventos.editarEventoMusical(
-                            manejoUsuarios.getUsuarioLogeado(),
-                            codigo, titulo, desc, fecha, renta, tm, staff
-                    );
                     break;
                 }
                 case "RELIGIOSO": {
@@ -450,17 +405,108 @@ public class FrmEditarEvento extends BaseFrame {
             this.dispose();
         });
 
-        panelDeportivo.setVisible(true);
+        panelDeportivo.setVisible(false);
         panelMusical.setVisible(false);
         panelReligioso.setVisible(false);
+        panelJugadores.setVisible(false);
         setContentPane(panelPrincipal);
+    }
+
+    private void reconstruirTablaJugadores(int req, String eq1, String eq2) {
+        String h1 = (eq1 == null || eq1.isBlank()) ? "Equipo 1" : eq1.trim();
+        String h2 = (eq2 == null || eq2.isBlank()) ? "Equipo 2" : eq2.trim();
+
+        DefaultTableModel m = new DefaultTableModel(new Object[]{"#", h1, h2}, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return c > 0;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int c) {
+                return c == 0 ? Integer.class : String.class;
+            }
+        };
+        for (int i = 0; i < req; i++) {
+            m.addRow(new Object[]{i + 1, "", ""});
+        }
+
+        tablaJugadores.setModel(m);
+        modeloJug = m;
+        var col0 = tablaJugadores.getColumnModel().getColumn(0);
+        col0.setMaxWidth(50);
+        col0.setMinWidth(40);
+        tablaJugadores.setRowHeight(22);
+        tablaJugadores.setFillsViewportHeight(true);
+    }
+
+    private void cargarJugadores(EventoDeportivo dep) {
+        int req = cupoPorDeporte(dep.getTipoDeporte());
+        reconstruirTablaJugadores(req, dep.getEquipo1(), dep.getEquipo2());
+
+        int n1 = (dep.getJugadoresEquipo1() != null) ? dep.getJugadoresEquipo1().size() : 0;
+        int n2 = (dep.getJugadoresEquipo2() != null) ? dep.getJugadoresEquipo2().size() : 0;
+        for (int i = 0; i < req; i++) {
+            String j1 = (i < n1 && dep.getJugadoresEquipo1().get(i) != null) ? dep.getJugadoresEquipo1().get(i).trim() : "";
+            String j2 = (i < n2 && dep.getJugadoresEquipo2().get(i) != null) ? dep.getJugadoresEquipo2().get(i).trim() : "";
+            modeloJug.setValueAt(j1, i, 1);
+            modeloJug.setValueAt(j2, i, 2);
+        }
+    }
+
+    private void detenerEdicionTabla() {
+        if (tablaJugadores != null && tablaJugadores.isEditing()) {
+            tablaJugadores.getCellEditor().stopCellEditing();
+        }
+    }
+
+    private String[][] leerJugadoresTabla() {
+        if (tablaJugadores != null && tablaJugadores.isEditing()) {
+            tablaJugadores.getCellEditor().stopCellEditing();
+        }
+        int n = (modeloJug != null) ? modeloJug.getRowCount() : 0;
+
+        // Si NO quieres exigir al menos 1 fila, borra este if
+        if (n == 0) {
+            throw new IllegalStateException("Agrega al menos una fila de jugadores.");
+        }
+
+        String[] j1 = new String[n];
+        String[] j2 = new String[n];
+
+        for (int i = 0; i < n; i++) {
+            String s1 = (modeloJug.getValueAt(i, 1) == null) ? "" : modeloJug.getValueAt(i, 1).toString().trim();
+            String s2 = (modeloJug.getValueAt(i, 2) == null) ? "" : modeloJug.getValueAt(i, 2).toString().trim();
+
+            if (s1.isEmpty() || s2.isEmpty()) {
+                throw new IllegalArgumentException("Fila " + (i + 1) + " Incompleta: ambos jugadores son obligatorios.");
+            }
+            j1[i] = s1;
+            j2[i] = s2;
+        }
+        return new String[][]{j1, j2};
+    }
+
+    private int cupoPorDeporte(TipoDeporte d) {
+        if (d == null) {
+            return 0;
+        }
+        switch (d) {
+            case FUTBOL:
+                return 11;
+            case TENIS:
+                return 1;
+            case RUGBY:
+                return 15;
+            case BASEBALL:
+                return 9;
+            default:
+                return 0;
+        }
     }
 
     public static void main(String[] args) {
         new FrmEditarEvento().setVisible(true);
     }
 }
-
-//RECUERDA VALIDAR QUE EL TIPO DE EVENTO SEA EL MISMOOOOO (creo)
-//EQUIPO INGRESAR NO SIRVEEEEEEE
 //VER EVENTO LE FALTAN CAMPOS QQUE MOSTRAR
