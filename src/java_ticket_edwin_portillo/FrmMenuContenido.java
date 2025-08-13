@@ -50,6 +50,8 @@ public class FrmMenuContenido extends BaseFrame {
 
         // Acciones
         btnEventos.addActionListener(e -> {
+            new FrmEventos().setVisible(true);
+            this.dispose();
         });
 
         btnReportes.addActionListener(e -> {

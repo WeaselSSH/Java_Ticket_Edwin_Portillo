@@ -133,7 +133,7 @@ public class FrmEditarEvento extends BaseFrame {
                 tablaJugadores.getCellEditor().stopCellEditing();
             }
 
-            int jugRequerido = cupoDeporte((TipoDeporte) cboDeporte.getSelectedItem());
+            int jugRequerido = cantidadJugadores((TipoDeporte) cboDeporte.getSelectedItem());
             reconstruirTablaJugadores(jugRequerido, txtEquipo1.getText(), txtEquipo2.getText());
         });
 
@@ -448,7 +448,7 @@ public class FrmEditarEvento extends BaseFrame {
     }
 
     private void cargarJugadores(EventoDeportivo dep) {
-        int jugadoresRequeridos = cupoDeporte(dep.getTipoDeporte());
+        int jugadoresRequeridos = cantidadJugadores(dep.getTipoDeporte());
         reconstruirTablaJugadores(jugadoresRequeridos, dep.getEquipo1(), dep.getEquipo2());
 
         int n1 = (dep.getJugadoresEquipo1() != null) ? dep.getJugadoresEquipo1().size() : 0;
@@ -486,7 +486,7 @@ public class FrmEditarEvento extends BaseFrame {
         return new String[][]{j1, j2};
     }
 
-    private int cupoDeporte(TipoDeporte d) {
+    private int cantidadJugadores(TipoDeporte d) {
         if (d == null) {
             return 0;
         }
@@ -508,8 +508,8 @@ public class FrmEditarEvento extends BaseFrame {
         new FrmEditarEvento().setVisible(true);
     }
 }
-//QUE FUNCIONE LOS DEMáS TIPOS DE USUARIOS
-//REPORTES
 //EDITAR USUARIO
+//REPORTES
 //STAFF MUSICAL
 //CONSULTAR LO DE FECHAS, EN ESPECIAL PARA REALIZADOS Y QUE EDITAR EN EVENTOS YA REALIZADOS
+//regresar al menú principal?

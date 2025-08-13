@@ -50,6 +50,8 @@ public class FrmMenuLimitado extends BaseFrame {
 
         // Acciones
         btnVerEventos.addActionListener(e -> {
+            new FrmEventos().setVisible(true);
+            this.dispose();
         });
 
         btnReportes.addActionListener(e -> {
