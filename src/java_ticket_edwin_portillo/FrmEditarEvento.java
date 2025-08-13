@@ -508,8 +508,8 @@ public class FrmEditarEvento extends BaseFrame {
         new FrmEditarEvento().setVisible(true);
     }
 }
-//EDITAR USUARIO
 //REPORTES
 //STAFF MUSICAL
 //CONSULTAR LO DE FECHAS, EN ESPECIAL PARA REALIZADOS Y QUE EDITAR EN EVENTOS YA REALIZADOS
+//VER EVENTO MOSTRAR SU CREADOR (maybe)
 //regresar al menú principal?

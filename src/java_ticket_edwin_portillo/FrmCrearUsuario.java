@@ -73,7 +73,7 @@ public class FrmCrearUsuario extends BaseFrame {
         JTextField txtNombre = crearTextField(190, 52, 200, 22);
         panelCentro.add(txtNombre);
 
-        JLabel lblUsuario = crearLabel("Username:", 40, 90, 150, 25, Font.BOLD, 14f);
+        JLabel lblUsuario = crearLabel("Nombre de usuario:", 40, 90, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblUsuario);
 
         JTextField txtUsuario = crearTextField(190, 92, 200, 22);

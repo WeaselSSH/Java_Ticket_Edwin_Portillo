@@ -31,12 +31,19 @@ public class ManejoUsuarios {
     }
 
     public Usuario buscarUsuario(String usuario) {
-        for (Usuario u : usuarios) {
-            if (!u.getEliminado() && u.getUsuario().equalsIgnoreCase(usuario)) {
-                return u;
-            }
+        return buscarUsuarioRecursivo(usuario, 0);
+    }
+
+    //recursivo está separado para no romper mi lógica previa en los Frm
+    private Usuario buscarUsuarioRecursivo(String usuario, int i) {
+        if (i >= usuarios.size()) {
+            return null;
         }
-        return null;
+        Usuario u = usuarios.get(i);
+        if (!u.getEliminado() && u.getUsuario().equalsIgnoreCase(usuario)) {
+            return u;
+        }
+        return buscarUsuarioRecursivo(usuario, i + 1);
     }
 
     public boolean contraseniaValida(String contrasenia) {
@@ -114,4 +121,32 @@ public class ManejoUsuarios {
         }
         return false;
     }
+
+    public boolean actualizarUsuario(String usuario, String nuevoNombre, String nuevaContrasenia, int nuevaEdad) {
+        Usuario u = buscarUsuario(usuario);
+        if (u == null || u.getEliminado()) {
+            return false;
+        }
+        if ("admin".equalsIgnoreCase(u.getUsuario())) {
+            return false;
+        }
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            return false;
+        }
+        if (nuevaEdad <= 0) {
+            return false;
+        }
+
+        if (nuevaContrasenia != null && !nuevaContrasenia.isBlank()) {
+            if (!contraseniaValida(nuevaContrasenia)) {
+                return false;
+            }
+            u.setContrasenia(nuevaContrasenia);
+        }
+
+        u.setNombre(nuevoNombre);
+        u.setEdad(nuevaEdad);
+        return true;
+    }
+
 }

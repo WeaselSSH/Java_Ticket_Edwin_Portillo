@@ -58,7 +58,8 @@ public class FrmMenuContenido extends BaseFrame {
         });
 
         btnSalir.addActionListener(e -> {
-            System.exit(0);
+            new FrmLogin().setVisible(true);
+            this.dispose();
         });
 
         setContentPane(panelPrincipal);

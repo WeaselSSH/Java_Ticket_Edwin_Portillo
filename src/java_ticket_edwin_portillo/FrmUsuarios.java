@@ -59,6 +59,8 @@ public class FrmUsuarios extends BaseFrame {
         });
 
         btnEditar.addActionListener(e -> {
+            new FrmEditarUsuario().setVisible(true);
+            this.dispose();
         });
 
         btnEliminar.addActionListener(e -> {

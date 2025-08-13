@@ -58,7 +58,8 @@ public class FrmMenuLimitado extends BaseFrame {
         });
 
         btnSalir.addActionListener(e -> {
-            System.exit(0);
+            new FrmMenuLimitado().setVisible(true);
+            this.dispose();
         });
 
         setContentPane(panelPrincipal);
