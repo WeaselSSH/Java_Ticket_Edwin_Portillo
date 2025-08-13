@@ -69,6 +69,8 @@ public class FrmVerEvento extends BaseFrame {
 
         JTextArea txtResultado;
         txtResultado = new JTextArea();
+        txtResultado.setLineWrap(true);
+        txtResultado.setWrapStyleWord(true);
         txtResultado.setEditable(false);
         txtResultado.setFont(new Font("Monospaced", Font.PLAIN, 13));
         txtResultado.setBackground(Color.decode("#1A2332"));

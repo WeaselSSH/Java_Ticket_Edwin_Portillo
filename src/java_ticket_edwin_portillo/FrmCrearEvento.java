@@ -1,5 +1,6 @@
 package java_ticket_edwin_portillo;
 
+import Eventos.Evento;
 import Usuarios.Usuario;
 import Tipos.TipoMusica;
 import Tipos.TipoDeporte;
@@ -193,6 +194,15 @@ public class FrmCrearEvento extends BaseFrame {
             if (fechaSel.before(minimoDias)) {
                 JOptionPane.showMessageDialog(this,
                         "Error: la fecha debe ser al menos dentro de 2 días (más de 1 día después de hoy).");
+                return;
+            }
+
+            Evento choque = manejoEventos.choqueFecha(fechaSel);
+
+            if (choque != null) {
+                JOptionPane.showMessageDialog(this,
+                        "Error: ya existe un evento para ese día: " + choque.getCodigo()
+                        + " - " + choque.getTitulo());
                 return;
             }
 

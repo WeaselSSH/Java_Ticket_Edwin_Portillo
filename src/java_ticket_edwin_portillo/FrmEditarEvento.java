@@ -253,6 +253,7 @@ public class FrmEditarEvento extends BaseFrame {
             String tipo = evt.getTipo().toUpperCase();
             boolean esDeportivo = "DEPORTIVO".equals(tipo);
             cboTipo.setSelectedItem(tipo);
+            cboTipo.setEnabled(false);
             panelDeportivo.setVisible(false);
             panelMusical.setVisible(false);
             panelReligioso.setVisible(false);
@@ -285,7 +286,7 @@ public class FrmEditarEvento extends BaseFrame {
                     txtConvertidos.setText(String.valueOf(reli.getCantidadConvertidos()));
                     break;
                 default:
-                    JOptionPane.showMessageDialog(this, "Tipo desconocido.");
+                    JOptionPane.showMessageDialog(this, "Tipo descripciononocido.");
             }
         });
 
@@ -303,7 +304,7 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             String titulo = txtTitulo.getText().trim();
-            String desc = txtDescripcion.getText().trim();
+            String descripcion = txtDescripcion.getText().trim();
             Calendar fecha = dateChooser.getCalendar();
             if (titulo.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Ingrese título.");
@@ -327,7 +328,12 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             boolean exitoso = false;
-            String tipoReal = evt.getTipo().toUpperCase();
+            Object tipoSeleccionado = cboTipo.getSelectedItem();
+            if (tipoSeleccionado == null) {
+                JOptionPane.showMessageDialog(this, "Error: seleccione el tipo de evento.");
+                return;
+            }
+            String tipoReal = tipoSeleccionado.toString().toUpperCase();
 
             switch (tipoReal) {
                 case "DEPORTIVO": {
@@ -358,7 +364,7 @@ public class FrmEditarEvento extends BaseFrame {
 
                     exitoso = manejoEventos.editarEventoDeportivo(
                             manejoUsuarios.getUsuarioLogeado(),
-                            codigo, titulo, desc, fecha, renta,
+                            codigo, titulo, descripcion, fecha, renta,
                             eq1, eq2, tipoDeporte,
                             jugadores[0], jugadores[1]
                     );
@@ -389,12 +395,12 @@ public class FrmEditarEvento extends BaseFrame {
 
                     exitoso = manejoEventos.editarEventoReligioso(
                             manejoUsuarios.getUsuarioLogeado(),
-                            codigo, titulo, desc, fecha, renta, convertidos
+                            codigo, titulo, descripcion, fecha, renta, convertidos
                     );
                     break;
                 }
                 default:
-                    JOptionPane.showMessageDialog(this, "Tipo desconocido.");
+                    JOptionPane.showMessageDialog(this, "Tipo descripciononocido.");
                     return;
             }
 
@@ -465,14 +471,17 @@ public class FrmEditarEvento extends BaseFrame {
         String j2[] = new String[n];
 
         for (int i = 0; i < n; i++) {
-            String s1 = modeloJugador.getValueAt(i, 1).toString().trim();
-            String s2 = modeloJugador.getValueAt(i, 2).toString().trim();
+            String jugador1 = (modeloJugador.getValueAt(i, 1) == null) ? ""
+                    : modeloJugador.getValueAt(i, 1).toString().trim();
 
-            if (s1.isEmpty() || s2.isEmpty()) {
+            String jugador2 = (modeloJugador.getValueAt(i, 2) == null) ? ""
+                    : modeloJugador.getValueAt(i, 2).toString().trim();
+
+            if (jugador1.isEmpty() || jugador2.isEmpty()) {
                 throw new IllegalArgumentException("Fila " + (i + 1) + " Incompleta: ambos jugadores son obligatorios.");
             }
-            j1[i] = s1;
-            j2[i] = s2;
+            j1[i] = jugador1;
+            j2[i] = jugador2;
         }
         return new String[][]{j1, j2};
     }
@@ -499,4 +508,8 @@ public class FrmEditarEvento extends BaseFrame {
         new FrmEditarEvento().setVisible(true);
     }
 }
-//VER EVENTO LE FALTAN CAMPOS QQUE MOSTRAR
+//QUE FUNCIONE LOS DEMáS TIPOS DE USUARIOS
+//REPORTES
+//EDITAR USUARIO
+//STAFF MUSICAL
+//CONSULTAR LO DE FECHAS, EN ESPECIAL PARA REALIZADOS Y QUE EDITAR EN EVENTOS YA REALIZADOS

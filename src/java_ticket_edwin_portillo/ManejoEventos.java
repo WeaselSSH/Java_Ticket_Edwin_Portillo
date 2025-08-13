@@ -286,4 +286,18 @@ public class ManejoEventos {
         return true;
     }
 
+    private boolean mismaFecha(Calendar a, Calendar b) {
+        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR)
+                && a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public Evento choqueFecha(Calendar fecha) {
+        for (Evento evt : eventos) {
+            if (!evt.getCancelado() && mismaFecha(evt.getFechaRealizar(), fecha)) {
+                return evt;
+            }
+        }
+        return null;
+    }
+
 }

@@ -113,12 +113,20 @@ public abstract class Evento {
                 + "\nMonto de Renta: L." + montoRenta
                 + "\nTipo: " + getTipo();
 
-        String estado = (cancelado ? "\nEvento cancelado" : "")
-                + (realizado ? "\nEvento realizado" : "");
+        String estado;
+        if (cancelado) {
+            estado = "\nEstado: Cancelado";
+        } else if (realizado) {
+            estado = "\nEstado: Realizado";
+        } else {
+            estado = "\nEstado: Por realizar";
+        }
 
-        String multaTexto = (cancelado && multa > 0)
-                ? "\nMulta: L." + String.format("%.2f", multa) + (multaPagada ? " (pagada)" : " (pendiente)")
-                : "";
+        String multaTexto = "";
+        if (cancelado) {
+            multaTexto = "\nMulta: L." + String.format("%.2f", multa)
+                    + (multa > 0 ? (multaPagada ? " (pagada)" : " (pendiente)") : "");
+        }
 
         return base + estado + multaTexto;
     }
