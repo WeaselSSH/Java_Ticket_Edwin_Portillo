@@ -50,7 +50,7 @@ public class FrmMenuLimitado extends BaseFrame {
 
         // Acciones
         btnVerEventos.addActionListener(e -> {
-            new FrmEventos().setVisible(true);
+            new FrmVerEvento().setVisible(true);
             this.dispose();
         });
 
@@ -58,7 +58,7 @@ public class FrmMenuLimitado extends BaseFrame {
         });
 
         btnSalir.addActionListener(e -> {
-            new FrmMenuLimitado().setVisible(true);
+            new FrmLogin().setVisible(true);
             this.dispose();
         });
 

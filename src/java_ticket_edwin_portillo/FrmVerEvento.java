@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import Eventos.Evento;
+import Usuarios.Limitado;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -20,6 +21,7 @@ import javax.swing.JTextArea;
 public class FrmVerEvento extends BaseFrame {
 
     ManejoEventos manejoEventos = ManejoEventos.getInstancia();
+    ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmVerEvento() {
         super("Ver evento", 380, 500);
@@ -100,8 +102,14 @@ public class FrmVerEvento extends BaseFrame {
         });
 
         btnRegresar.addActionListener(e -> {
-            new FrmEventos().setVisible(true);
-            this.dispose();
+            if (manejoUsuarios.getUsuarioLogeado() instanceof Limitado) {
+                new FrmMenuLimitado().setVisible(true);
+                this.dispose();
+                return;
+            } else {
+                new FrmEventos().setVisible(true);
+                this.dispose();
+            }
         });
 
         setContentPane(panelPrincipal);
