@@ -27,7 +27,7 @@ public class FrmEditarEvento extends BaseFrame {
     private DefaultTableModel modeloJugador;
 
     public FrmEditarEvento() {
-        super("Editar Evento", 920, 630);
+        super("Editar Evento", 920, 580);
     }
 
     @Override
@@ -168,9 +168,8 @@ public class FrmEditarEvento extends BaseFrame {
         JLabel lblTipoMusica = crearLabel("Tipo de Música:", 0, 0, 120, 25, Font.BOLD, 12f);
         panelMusical.add(lblTipoMusica);
 
-        JComboBox<TipoMusica> cboMusica = crearComboBox(TipoMusica.values(), 130, 0, 170, 25);
-        cboMusica.setEnabled(false);
-        panelMusical.add(cboMusica);
+        JLabel lblValorMusica = crearLabel("-", 130, 0, 70, 25, Font.BOLD, 12F);
+        panelMusical.add(lblValorMusica);
 
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
@@ -185,10 +184,10 @@ public class FrmEditarEvento extends BaseFrame {
         panelReligioso.add(txtConvertidos);
 
         // BOTONES
-        JButton btnGuardar = crearBoton("Guardar Cambios", 60, 465, 160, 35);
+        JButton btnGuardar = crearBoton("Guardar Cambios", 60, 415, 160, 35);
         panelCentro.add(btnGuardar);
 
-        JButton btnRegresar = crearBoton("Regresar", 240, 465, 160, 35);
+        JButton btnRegresar = crearBoton("Regresar", 240, 415, 160, 35);
         panelCentro.add(btnRegresar);
 
         btnCargar.addActionListener(e -> {
@@ -199,8 +198,8 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             Evento evt = manejoEventos.buscarEvento(codigo);
-            if (evt == null) {
-                JOptionPane.showMessageDialog(this, "No existe un evento con ese código.");
+            if (evt == null || evt.getCancelado()) {
+                JOptionPane.showMessageDialog(this, "Error: No existe un evento con ese código o fue cancelado.");
                 return;
             }
 
@@ -253,7 +252,10 @@ public class FrmEditarEvento extends BaseFrame {
                 tablaJugadores.getTableHeader().repaint();
 
             } else if (evt instanceof EventoMusical) {
+                EventoMusical em = (EventoMusical) evt;
+                
                 lblTipoValor.setText("MUSICAL");
+                lblValorMusica.setText(em.getTipoMusica().name());
                 panelMusical.setVisible(true);
 
             } else if (evt instanceof EventoReligioso) {
@@ -289,6 +291,40 @@ public class FrmEditarEvento extends BaseFrame {
             Evento evt = manejoEventos.buscarEvento(codigo);
             if (evt == null) {
                 JOptionPane.showMessageDialog(this, "Error: evento no existe.");
+                return;
+            }
+
+            Calendar hoy = Calendar.getInstance();
+            //se setea todo en 0 para que tome en cuenta el inicio del día
+            hoy.set(Calendar.HOUR_OF_DAY, 0);
+            hoy.set(Calendar.MINUTE, 0);
+            hoy.set(Calendar.SECOND, 0);
+            hoy.set(Calendar.MILLISECOND, 0);
+
+            //días mínimos para crear el evento (2)
+            Calendar minimoDias = Calendar.getInstance();
+            minimoDias.setTime(hoy.getTime());
+            minimoDias.add(Calendar.DAY_OF_MONTH, 2);
+
+            //fecha seleccionada en el dateChooser
+            Calendar fechaSel = Calendar.getInstance();
+            fechaSel.setTime(fecha.getTime());
+            fechaSel.set(Calendar.HOUR_OF_DAY, 0);
+            fechaSel.set(Calendar.MINUTE, 0);
+            fechaSel.set(Calendar.SECOND, 0);
+            fechaSel.set(Calendar.MILLISECOND, 0);
+
+            if (fechaSel.before(minimoDias)) {
+                JOptionPane.showMessageDialog(this,
+                        "Error: la fecha debe ser al menos dentro de 2 días (más de 1 día después de hoy).");
+                return;
+            }
+
+            Evento choque = manejoEventos.choqueFecha(fechaSel);
+            if (choque != null && !choque.getCodigo().equalsIgnoreCase(codigo)) {
+                JOptionPane.showMessageDialog(this,
+                        "Error: ya existe un evento para ese día: " + choque.getCodigo()
+                        + " - " + choque.getTitulo());
                 return;
             }
 
@@ -350,7 +386,6 @@ public class FrmEditarEvento extends BaseFrame {
                 }
 
                 EventoReligioso er = (EventoReligioso) evt;
-                Calendar hoy = Calendar.getInstance();
                 int convertidos;
 
                 if (hoy.after(fecha)) {
@@ -440,7 +475,7 @@ public class FrmEditarEvento extends BaseFrame {
     }
 }
 //REPORTES
-//EDITAR EVENTO (ACORDE A LO LóGICO)
+//EDITAR EVENTO STAFF MUSICAL
 //ver evento mostrar su creador?
 //regresar al menú principal?
 //fecha?

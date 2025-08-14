@@ -95,22 +95,22 @@ public class FrmCrearEvento extends BaseFrame {
         panelDeportivo.setOpaque(false);
         panelCentro.add(panelDeportivo);
 
-        JLabel lblEquipo1 = crearLabel("Equipo 1:", 0, 0, 100, 25, Font.BOLD, 12f);
+        JLabel lblEquipo1 = crearLabel("Nombre equipo 1:", 0, 0, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblEquipo1);
 
-        JTextField txtEquipo1 = crearTextField(100, 0, 200, 25);
+        JTextField txtEquipo1 = crearTextField(135, 0, 200, 25);
         panelDeportivo.add(txtEquipo1);
 
-        JLabel lblEquipo2 = crearLabel("Equipo 2:", 0, 35, 100, 25, Font.BOLD, 12f);
+        JLabel lblEquipo2 = crearLabel("Nombre equipo 2:", 0, 35, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblEquipo2);
 
-        JTextField txtEquipo2 = crearTextField(100, 35, 200, 25);
+        JTextField txtEquipo2 = crearTextField(135, 35, 200, 25);
         panelDeportivo.add(txtEquipo2);
 
         JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 70, 120, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblTipoDeporte);
 
-        JComboBox<TipoDeporte> cboDeporte = crearComboBox(TipoDeporte.values(), 130, 70, 170, 25);
+        JComboBox<TipoDeporte> cboDeporte = crearComboBox(TipoDeporte.values(), 135, 70, 170, 25);
         panelDeportivo.add(cboDeporte);
 
         //PANEL MUSICAL
