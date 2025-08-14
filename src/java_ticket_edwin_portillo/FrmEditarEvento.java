@@ -269,6 +269,7 @@ public class FrmEditarEvento extends BaseFrame {
                 txtTitulo.setEnabled(true);
                 txtDescripcion.setEnabled(true);
                 txtMontoRenta.setEnabled(true);
+                txtConvertidos.setEnabled(false);
             }
         });
 
@@ -292,8 +293,6 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             String tipoEvt = lblTipoValor.getText().trim();
-
-            String convertidosTexto = null;
 
             if ("DEPORTIVO".equalsIgnoreCase(tipoEvt)) {
                 String equipo1 = txtEquipo1.getText().trim();
@@ -324,25 +323,62 @@ public class FrmEditarEvento extends BaseFrame {
 
                 TipoDeporte deporte = ((EventoDeportivo) evt).getTipoDeporte();
 
+                double monto;
+                try {
+                    monto = Double.parseDouble(montoTexto);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
+                    return;
+                }
+
                 boolean exitoso = manejoEventos.editarEventoDeportivo(
-                        usuarioLogeado,
-                        codigo,
-                        titulo,
-                        descripcion,
-                        fecha,
-                        Double.parseDouble(montoTexto),
-                        equipo1,
-                        equipo2,
-                        deporte,
-                        arr1,
-                        arr2
+                        usuarioLogeado, codigo, titulo, descripcion, fecha,
+                        monto, equipo1, equipo2, deporte, arr1, arr2
                 );
 
                 JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
                         : "Error: no se pudo guardar.");
 
             } else if ("RELIGIOSO".equalsIgnoreCase(tipoEvt)) {
-                convertidosTexto = txtConvertidos.getText().trim();
+                Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
+                double monto;
+                try {
+                    monto = Double.parseDouble(montoTexto);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
+                    return;
+                }
+
+                EventoReligioso er = (EventoReligioso) evt;
+                Calendar hoy = Calendar.getInstance();
+                int convertidos;
+
+                if (hoy.after(fecha)) {
+                    String convertidosTexto = txtConvertidos.getText().trim();
+                    if (convertidosTexto.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Error: ingrese la cantidad de convertidos.");
+                        return;
+                    }
+                    try {
+                        convertidos = Integer.parseInt(convertidosTexto);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Error: convertidos debe ser un entero válido.");
+                        return;
+                    }
+                    if (convertidos < 0) {
+                        JOptionPane.showMessageDialog(this, "Error: convertidos no puede ser negativo.");
+                        return;
+                    }
+                } else {
+                    convertidos = er.getCantidadConvertidos();
+                }
+
+                boolean exitoso = manejoEventos.editarEventoReligioso(
+                        usuarioLogeado, codigo, titulo, descripcion, fecha, monto, convertidos
+                );
+
+                JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
+                        : "Error: no se pudo guardar.");
             }
         });
 
