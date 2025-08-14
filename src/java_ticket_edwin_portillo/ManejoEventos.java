@@ -29,12 +29,18 @@ public class ManejoEventos {
     }
 
     public Evento buscarEvento(String codigoEvento) {
-        for (Evento evt : eventos) {
-            if (evt.getCodigo().equalsIgnoreCase(codigoEvento)) {
-                return evt;
-            }
+        return buscarEventoRecursivo(codigoEvento, 0); //misma situación que buscar usuario. 
+    }
+
+    private Evento buscarEventoRecursivo(String codigo, int i) {
+        if (codigo == null || i >= eventos.size()) {
+            return null;
         }
-        return null;
+        Evento e = eventos.get(i);
+        if (e.getCodigo().equalsIgnoreCase(codigo)) {
+            return e;
+        }
+        return buscarEventoRecursivo(codigo, i + 1);
     }
 
     private boolean usuarioCreador(Usuario usuario, String codigo) {
@@ -229,75 +235,24 @@ public class ManejoEventos {
         return true;
     }
 
-    public boolean actualizarJugadoresDeportivo(Usuario usuario, String codigo,
-            String[] jugadores1, String[] jugadores2) {
-        Evento evt = buscarEvento(codigo);
-        if (evt == null || !(evt instanceof EventoDeportivo)) {
-            return false;
-        }
-
-        if (!usuarioCreador(usuario, codigo)) {
-            return false;
-        }
-
-        EventoDeportivo d = (EventoDeportivo) evt;
-        d.getJugadoresEquipo1().clear();
-        d.getJugadoresEquipo2().clear();
-        if (jugadores1 != null) {
-            for (String j : jugadores1) {
-                if (j != null && !j.trim().isEmpty()) {
-                    d.agregarJugadorEquipo1(j.trim());
-                }
-            }
-        }
-        if (jugadores2 != null) {
-            for (String j : jugadores2) {
-                if (j != null && !j.trim().isEmpty()) {
-                    d.agregarJugadorEquipo2(j.trim());
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean actualizarStaffMusical(Usuario usuario, String codigo, String[] staff) {
-        Evento evt = buscarEvento(codigo);
-        if (evt == null || !(evt instanceof EventoMusical)) {
-            return false;
-        }
-
-        if (!usuarioCreador(usuario, codigo)) {
-            return false;
-        }
-
-        EventoMusical m = (EventoMusical) evt;
-        m.getStaffTecnico().clear();
-
-        if (staff != null) {
-            for (String s : staff) {
-                if (s != null) {
-                    String nombre = s.trim();
-                    if (!nombre.isEmpty()) {
-                        m.agregarStaff(nombre);
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     private boolean mismaFecha(Calendar a, Calendar b) {
         return a.get(Calendar.YEAR) == b.get(Calendar.YEAR)
                 && a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR);
     }
 
     public Evento choqueFecha(Calendar fecha) {
-        for (Evento evt : eventos) {
-            if (!evt.getCancelado() && mismaFecha(evt.getFechaRealizar(), fecha)) {
-                return evt;
-            }
+        return choqueFechaRecursiva(fecha, 0); //más de lo mismo
+    }
+
+    private Evento choqueFechaRecursiva(Calendar fecha, int i) {
+        if (i >= eventos.size()) {
+            return null;
         }
-        return null;
+        Evento evt = eventos.get(i);
+        if (!evt.getCancelado() && mismaFecha(evt.getFechaRealizar(), fecha)) {
+            return evt;
+        }
+        return choqueFechaRecursiva(fecha, i + 1);
     }
 
 }

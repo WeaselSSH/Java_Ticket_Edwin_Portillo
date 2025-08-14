@@ -13,9 +13,9 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 public class FrmEditarEvento extends BaseFrame {
 
@@ -73,33 +73,38 @@ public class FrmEditarEvento extends BaseFrame {
         panelCentro.add(lblTituloEvento);
 
         JTextField txtTitulo = crearTextField(170, 40, 265, 25);
+        txtTitulo.setEnabled(false);
         panelCentro.add(txtTitulo);
 
         JLabel lblDescripcion = crearLabel("Descripción:", 35, 80, 140, 25, Font.BOLD, 14f);
         panelCentro.add(lblDescripcion);
 
         JTextArea txtDescripcion = crearTextArea(170, 80, 265, 70);
-        panelCentro.add(txtDescripcion);
+        JScrollPane spDesc = new JScrollPane(txtDescripcion);
+        spDesc.setBounds(170, 80, 265, 70);
+        txtDescripcion.setEnabled(false);
+        panelCentro.add(spDesc);
 
         JLabel lblFecha = crearLabel("Fecha del Evento:", 35, 160, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblFecha);
 
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setBounds(170, 160, 200, 25);
+        dateChooser.setEnabled(false);
         panelCentro.add(dateChooser);
 
         JLabel lblMontoRenta = crearLabel("Monto de Renta:", 35, 200, 150, 25, Font.BOLD, 14f);
         panelCentro.add(lblMontoRenta);
 
         JTextField txtMontoRenta = crearTextField(170, 200, 200, 25);
+        txtMontoRenta.setEnabled(false);
         panelCentro.add(txtMontoRenta);
 
         JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 240, 200, 25, Font.BOLD, 14f);
         panelCentro.add(lblTipo);
 
-        String[] tipos = {"DEPORTIVO", "MUSICAL", "RELIGIOSO"};
-        JComboBox<String> cboTipo = crearComboBox(tipos, 170, 240, 200, 25);
-        panelCentro.add(cboTipo);
+        JLabel lblTipoValor = crearLabel("-", 170, 240, 200, 25, Font.PLAIN, 14f);
+        panelCentro.add(lblTipoValor);
 
         // PANEL DEPORTIVO
         JPanel panelDeportivo = new JPanel(null);
@@ -111,31 +116,21 @@ public class FrmEditarEvento extends BaseFrame {
         panelDeportivo.add(lblEquipo1);
 
         JTextField txtEquipo1 = crearTextField(100, 0, 235, 25);
+        txtEquipo1.setEnabled(false);
         panelDeportivo.add(txtEquipo1);
 
         JLabel lblEquipo2 = crearLabel("Equipo 2:", 0, 40, 100, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblEquipo2);
 
         JTextField txtEquipo2 = crearTextField(100, 40, 235, 25);
+        txtEquipo2.setEnabled(false);
         panelDeportivo.add(txtEquipo2);
 
         JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 80, 120, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblTipoDeporte);
 
-        JComboBox<TipoDeporte> cboDeporte = crearComboBox(TipoDeporte.values(), 130, 80, 170, 25);
-        panelDeportivo.add(cboDeporte);
-
-        cboDeporte.addActionListener(e -> {
-            if (!panelJugadores.isVisible()) {
-                return;
-            }
-            if (tablaJugadores.isEditing()) {
-                tablaJugadores.getCellEditor().stopCellEditing();
-            }
-
-            int jugRequerido = cantidadJugadores((TipoDeporte) cboDeporte.getSelectedItem());
-            reconstruirTablaJugadores(jugRequerido, txtEquipo1.getText(), txtEquipo2.getText());
-        });
+        JLabel lbltipoDep = crearLabel("-", 130, 80, 170, 25, Font.BOLD, 12f);
+        panelDeportivo.add(lbltipoDep);
 
         //panel jugadores
         panelJugadores = new JPanel(null);
@@ -174,6 +169,7 @@ public class FrmEditarEvento extends BaseFrame {
         panelMusical.add(lblTipoMusica);
 
         JComboBox<TipoMusica> cboMusica = crearComboBox(TipoMusica.values(), 130, 0, 170, 25);
+        cboMusica.setEnabled(false);
         panelMusical.add(cboMusica);
 
         //PANEL RELIGIOSO 
@@ -188,16 +184,6 @@ public class FrmEditarEvento extends BaseFrame {
         JTextField txtConvertidos = crearTextField(160, 0, 180, 25);
         panelReligioso.add(txtConvertidos);
 
-        //combobox
-        cboTipo.addActionListener(e -> {
-            String tipo = (String) cboTipo.getSelectedItem();
-            boolean esDeportivo = "DEPORTIVO".equals(tipo);
-            panelDeportivo.setVisible("DEPORTIVO".equals(tipo));
-            panelMusical.setVisible("MUSICAL".equals(tipo));
-            panelReligioso.setVisible("RELIGIOSO".equals(tipo));
-            panelJugadores.setVisible(esDeportivo);
-        });
-
         // BOTONES
         JButton btnGuardar = crearBoton("Guardar Cambios", 60, 465, 160, 35);
         panelCentro.add(btnGuardar);
@@ -208,203 +194,156 @@ public class FrmEditarEvento extends BaseFrame {
         btnCargar.addActionListener(e -> {
             String codigo = txtCodigo.getText().trim();
             if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Ingrese un código.");
+                JOptionPane.showMessageDialog(this, "Ingrese un código de evento.");
                 return;
-            }
-
-            Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
-            boolean creador = false;
-
-            if (usuarioLogeado.getRol().equalsIgnoreCase("administrador")) {
-                for (String c : ((Administrador) usuarioLogeado).getEventosCreados()) {
-                    if (c != null && c.equalsIgnoreCase(codigo.toUpperCase())) {
-                        creador = true;
-                        break;
-                    }
-                }
-            } else if (usuarioLogeado.getRol().equalsIgnoreCase("contenido")) {
-                for (String c : ((Contenido) usuarioLogeado).getEventosCreados()) {
-                    if (c != null && c.equalsIgnoreCase(codigo.toUpperCase())) {
-                        creador = true;
-                        break;
-                    }
-                }
-            } else {
-                creador = false;
-            }
-
-            if (!creador) {
-                JOptionPane.showMessageDialog(this, "Error: solo el creador puede editar el evento");
-                return;
-
             }
 
             Evento evt = manejoEventos.buscarEvento(codigo);
             if (evt == null) {
-                JOptionPane.showMessageDialog(this, "Error: este evento no existe.");
+                JOptionPane.showMessageDialog(this, "No existe un evento con ese código.");
+                return;
+            }
+
+            Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
+
+            if (!esCreador(usuarioLogeado, codigo)) {
+                JOptionPane.showMessageDialog(this, "No puedes editar este evento: no eres el creador.");
                 return;
             }
 
             txtTitulo.setText(evt.getTitulo());
             txtDescripcion.setText(evt.getDescripcion());
             dateChooser.setCalendar(evt.getFechaRealizar());
-            txtMontoRenta.setText(String.valueOf(evt.getMontoRenta()));
+            txtMontoRenta.setText(Double.toString(evt.getMontoRenta()));
 
-            String tipo = evt.getTipo().toUpperCase();
-            boolean esDeportivo = "DEPORTIVO".equals(tipo);
-            cboTipo.setSelectedItem(tipo);
-            cboTipo.setEnabled(false);
             panelDeportivo.setVisible(false);
             panelMusical.setVisible(false);
             panelReligioso.setVisible(false);
-            panelJugadores.setVisible(esDeportivo);
+            panelJugadores.setVisible(false);
 
-            switch (tipo) {
-                case "DEPORTIVO":
-                    panelDeportivo.setVisible(true);
-                    EventoDeportivo dep = (EventoDeportivo) evt;
+            if (evt instanceof EventoDeportivo) {
+                EventoDeportivo ed = (EventoDeportivo) evt;
 
-                    txtEquipo1.setText(dep.getEquipo1());
-                    txtEquipo2.setText(dep.getEquipo2());
+                lblTipoValor.setText("DEPORTIVO");
+                lbltipoDep.setText(ed.getTipoDeporte().name());
+                txtEquipo1.setText(ed.getEquipo1());
+                txtEquipo2.setText(ed.getEquipo2());
 
-                    cboDeporte.setSelectedItem(dep.getTipoDeporte());
-                    cargarJugadores(dep);
-                    panelJugadores.setVisible(true);
+                panelDeportivo.setVisible(true);
+                panelJugadores.setVisible(true);
 
-                    break;
+                ArrayList<String> lista1 = ed.getJugadoresEquipo1();
+                ArrayList<String> lista2 = ed.getJugadoresEquipo2();
 
-                case "MUSICAL":
-                    panelMusical.setVisible(true);
-                    EventoMusical mus = (EventoMusical) evt;
+                int filasBase = jugadoresPorEquipo(ed.getTipoDeporte());
+                int tam1 = (lista1 != null) ? lista1.size() : 0;
+                int tam2 = (lista2 != null) ? lista2.size() : 0;
+                int filas = filasBase;
 
-                    cboMusica.setSelectedItem(mus.getTipoMusica());
-                    break;
+                rellenarTablaJugadores(filas);
 
-                case "RELIGIOSO":
-                    panelReligioso.setVisible(true);
-                    EventoReligioso reli = (EventoReligioso) evt;
-                    txtConvertidos.setText(String.valueOf(reli.getCantidadConvertidos()));
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(this, "Tipo descripciononocido.");
+                for (int i = 0; i < tam1 && i < filas; i++) {
+                    modeloJugador.setValueAt(lista1.get(i), i, 1);
+                }
+                for (int i = 0; i < tam2 && i < filas; i++) {
+                    modeloJugador.setValueAt(lista2.get(i), i, 2);
+                }
+                tablaJugadores.getColumnModel().getColumn(1).setHeaderValue(txtEquipo1.getText().trim());
+                tablaJugadores.getColumnModel().getColumn(2).setHeaderValue(txtEquipo2.getText().trim());
+                tablaJugadores.getTableHeader().repaint();
+
+            } else if (evt instanceof EventoMusical) {
+                lblTipoValor.setText("MUSICAL");
+                panelMusical.setVisible(true);
+
+            } else if (evt instanceof EventoReligioso) {
+                lblTipoValor.setText("RELIGIOSO");
+                panelReligioso.setVisible(true);
+                txtConvertidos.setText(String.valueOf(((EventoReligioso) evt).getCantidadConvertidos()));
+            }
+
+            Calendar hoy = Calendar.getInstance();
+
+            if (hoy.before(evt.getFechaRealizar())) {
+                dateChooser.setEnabled(true);
+                txtTitulo.setEnabled(true);
+                txtDescripcion.setEnabled(true);
+                txtMontoRenta.setEnabled(true);
             }
         });
 
         btnGuardar.addActionListener(e -> {
             String codigo = txtCodigo.getText().trim();
-            if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Ingrese un código.");
+            String titulo = txtTitulo.getText().trim();
+            String descripcion = txtDescripcion.getText().trim();
+            Calendar fecha = dateChooser.getCalendar();
+            String montoTexto = txtMontoRenta.getText().trim();
+
+            if (codigo.isEmpty() || titulo.isEmpty() || descripcion.isEmpty()
+                    || fecha == null || montoTexto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Error: uno de los campos está vacío.");
                 return;
             }
 
             Evento evt = manejoEventos.buscarEvento(codigo);
             if (evt == null) {
-                JOptionPane.showMessageDialog(this, "Error: este evento no existe.");
+                JOptionPane.showMessageDialog(this, "Error: evento no existe.");
                 return;
             }
 
-            String titulo = txtTitulo.getText().trim();
-            String descripcion = txtDescripcion.getText().trim();
-            Calendar fecha = dateChooser.getCalendar();
-            if (titulo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Ingrese título.");
-                return;
-            }
-            if (fecha == null) {
-                JOptionPane.showMessageDialog(this, "Seleccione fecha.");
-                return;
-            }
+            String tipoEvt = lblTipoValor.getText().trim();
 
-            double renta;
-            try {
-                renta = Double.parseDouble(txtMontoRenta.getText().trim());
-                if (renta < 0) {
-                    JOptionPane.showMessageDialog(this, "Monto inválido.");
-                    return;
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Monto inválido.");
-                return;
-            }
+            String convertidosTexto = null;
 
-            boolean exitoso = false;
-            Object tipoSeleccionado = cboTipo.getSelectedItem();
-            if (tipoSeleccionado == null) {
-                JOptionPane.showMessageDialog(this, "Error: seleccione el tipo de evento.");
-                return;
-            }
-            String tipoReal = tipoSeleccionado.toString().toUpperCase();
+            if ("DEPORTIVO".equalsIgnoreCase(tipoEvt)) {
+                String equipo1 = txtEquipo1.getText().trim();
+                String equipo2 = txtEquipo2.getText().trim();
 
-            switch (tipoReal) {
-                case "DEPORTIVO": {
-                    String eq1 = txtEquipo1.getText().trim();
-                    String eq2 = txtEquipo2.getText().trim();
-                    if (eq1.isEmpty() || eq2.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Ingrese ambos equipos.");
-                        return;
-                    }
-                    if (eq1.equalsIgnoreCase(eq2)) {
-                        JOptionPane.showMessageDialog(this, "Los equipos no pueden ser iguales.");
-                        return;
-                    }
-
-                    TipoDeporte tipoDeporte = (TipoDeporte) cboDeporte.getSelectedItem();
-                    if (tipoDeporte == null) {
-                        JOptionPane.showMessageDialog(this, "Seleccione tipo de deporte.");
-                        return;
-                    }
-
-                    String jugadores[][];
-                    try {
-                        jugadores = leerJugadoresTabla();
-                    } catch (IllegalArgumentException | IllegalStateException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage());
-                        return;
-                    }
-
-                    exitoso = manejoEventos.editarEventoDeportivo(
-                            manejoUsuarios.getUsuarioLogeado(),
-                            codigo, titulo, descripcion, fecha, renta,
-                            eq1, eq2, tipoDeporte,
-                            jugadores[0], jugadores[1]
-                    );
-                    break;
-                }
-
-                case "MUSICAL": {
-                    TipoMusica tm = (TipoMusica) cboMusica.getSelectedItem();
-                    if (tm == null) {
-                        JOptionPane.showMessageDialog(this, "Seleccione tipo de música.");
-                        return;
-                    }
-
-                    break;
-                }
-                case "RELIGIOSO": {
-                    int convertidos;
-                    try {
-                        convertidos = Integer.parseInt(txtConvertidos.getText().trim());
-                        if (convertidos < 0) {
-                            JOptionPane.showMessageDialog(this, "Convertidos inválido.");
-                            return;
+                ArrayList<String> jugadores1 = new ArrayList<>();
+                ArrayList<String> jugadores2 = new ArrayList<>();
+                for (int r = 0; r < modeloJugador.getRowCount(); r++) {
+                    Object v1 = modeloJugador.getValueAt(r, 1);
+                    if (v1 instanceof String) {
+                        String s = ((String) v1).trim();
+                        if (!s.isEmpty()) {
+                            jugadores1.add(s);
                         }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(this, "Convertidos inválido.");
-                        return;
                     }
-
-                    exitoso = manejoEventos.editarEventoReligioso(
-                            manejoUsuarios.getUsuarioLogeado(),
-                            codigo, titulo, descripcion, fecha, renta, convertidos
-                    );
-                    break;
+                    Object v2 = modeloJugador.getValueAt(r, 2);
+                    if (v2 instanceof String) {
+                        String s = ((String) v2).trim();
+                        if (!s.isEmpty()) {
+                            jugadores2.add(s);
+                        }
+                    }
                 }
-                default:
-                    JOptionPane.showMessageDialog(this, "Tipo descripciononocido.");
-                    return;
-            }
+                String[] arr1 = jugadores1.toArray(new String[0]);
+                String[] arr2 = jugadores2.toArray(new String[0]);
 
-            JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados." : "No se pudo guardar.");
+                Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
+
+                TipoDeporte deporte = ((EventoDeportivo) evt).getTipoDeporte();
+
+                boolean exitoso = manejoEventos.editarEventoDeportivo(
+                        usuarioLogeado,
+                        codigo,
+                        titulo,
+                        descripcion,
+                        fecha,
+                        Double.parseDouble(montoTexto),
+                        equipo1,
+                        equipo2,
+                        deporte,
+                        arr1,
+                        arr2
+                );
+
+                JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
+                        : "Error: no se pudo guardar.");
+
+            } else if ("RELIGIOSO".equalsIgnoreCase(tipoEvt)) {
+                convertidosTexto = txtConvertidos.getText().trim();
+            }
         });
 
         btnRegresar.addActionListener(e -> {
@@ -419,89 +358,45 @@ public class FrmEditarEvento extends BaseFrame {
         setContentPane(panelPrincipal);
     }
 
-    private void reconstruirTablaJugadores(int req, String eq1, String eq2) {
-        String tituloEquipo1 = eq1.trim();
-        String tituloEquipo2 = eq2.trim();
-
-        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"#", tituloEquipo1, tituloEquipo2}, 0) {
-            @Override
-            public boolean isCellEditable(int f, int c) {
-                return c > 0;
-            }
-
-            @Override
-            public Class<?> getColumnClass(int c) {
-                return c == 0 ? Integer.class : String.class;
-            }
-        };
-        for (int i = 0; i < req; i++) {
-            modelo.addRow(new Object[]{i + 1, "", ""});
-        }
-
-        tablaJugadores.setModel(modelo);
-        modeloJugador = modelo;
-        TableColumn col0 = tablaJugadores.getColumnModel().getColumn(0);
-        col0.setMaxWidth(50);
-        col0.setMinWidth(40);
-        tablaJugadores.setRowHeight(22);
-        tablaJugadores.setFillsViewportHeight(true);
-    }
-
-    private void cargarJugadores(EventoDeportivo dep) {
-        int jugadoresRequeridos = cantidadJugadores(dep.getTipoDeporte());
-        reconstruirTablaJugadores(jugadoresRequeridos, dep.getEquipo1(), dep.getEquipo2());
-
-        int n1 = (dep.getJugadoresEquipo1() != null) ? dep.getJugadoresEquipo1().size() : 0;
-        int n2 = (dep.getJugadoresEquipo2() != null) ? dep.getJugadoresEquipo2().size() : 0;
-        for (int i = 0; i < jugadoresRequeridos; i++) {
-            String j1 = (i < n1 && dep.getJugadoresEquipo1().get(i) != null) ? dep.getJugadoresEquipo1().get(i).trim() : "";
-            String j2 = (i < n2 && dep.getJugadoresEquipo2().get(i) != null) ? dep.getJugadoresEquipo2().get(i).trim() : "";
-            modeloJugador.setValueAt(j1, i, 1);
-            modeloJugador.setValueAt(j2, i, 2);
+    private void rellenarTablaJugadores(int filas) {
+        modeloJugador.setRowCount(0);
+        for (int i = 1; i <= filas; i++) {
+            modeloJugador.addRow(new Object[]{i, "", ""});
         }
     }
 
-    private String[][] leerJugadoresTabla() {
-        if (tablaJugadores != null && tablaJugadores.isEditing()) {
-            tablaJugadores.getCellEditor().stopCellEditing();
-        }
-        int n = (modeloJugador != null) ? modeloJugador.getRowCount() : 0;
-
-        String j1[] = new String[n];
-        String j2[] = new String[n];
-
-        for (int i = 0; i < n; i++) {
-            String jugador1 = (modeloJugador.getValueAt(i, 1) == null) ? ""
-                    : modeloJugador.getValueAt(i, 1).toString().trim();
-
-            String jugador2 = (modeloJugador.getValueAt(i, 2) == null) ? ""
-                    : modeloJugador.getValueAt(i, 2).toString().trim();
-
-            if (jugador1.isEmpty() || jugador2.isEmpty()) {
-                throw new IllegalArgumentException("Fila " + (i + 1) + " Incompleta: ambos jugadores son obligatorios.");
-            }
-            j1[i] = jugador1;
-            j2[i] = jugador2;
-        }
-        return new String[][]{j1, j2};
-    }
-
-    private int cantidadJugadores(TipoDeporte d) {
-        if (d == null) {
-            return 0;
-        }
+    private int jugadoresPorEquipo(TipoDeporte d) {
         switch (d) {
             case FUTBOL:
                 return 11;
-            case TENIS:
-                return 1;
             case RUGBY:
                 return 15;
             case BASEBALL:
                 return 9;
             default:
-                return 0;
+                return 1;
         }
+    }
+
+    private boolean esCreador(Usuario usuario, String codigo) {
+        if (usuario == null || codigo == null) {
+            return false;
+        }
+
+        if (usuario instanceof Administrador) {
+            for (String c : ((Administrador) usuario).getEventosCreados()) {
+                if (c != null && c.equalsIgnoreCase(codigo)) {
+                    return true;
+                }
+            }
+        } else if (usuario instanceof Contenido) {
+            for (String c : ((Contenido) usuario).getEventosCreados()) {
+                if (c != null && c.equalsIgnoreCase(codigo)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -509,7 +404,11 @@ public class FrmEditarEvento extends BaseFrame {
     }
 }
 //REPORTES
-//STAFF MUSICAL
-//CONSULTAR LO DE FECHAS, EN ESPECIAL PARA REALIZADOS Y QUE EDITAR EN EVENTOS YA REALIZADOS
-//VER EVENTO MOSTRAR SU CREADOR (maybe)
+//EDITAR EVENTO (ACORDE A LO LóGICO)
+//ver evento mostrar su creador?
 //regresar al menú principal?
+//fecha?
+//final classes
+//CLASE FINAL, MéTODO FINAL.
+//si se puede cambiar color al estar disabled
+//convertidos solo si es after hoy
