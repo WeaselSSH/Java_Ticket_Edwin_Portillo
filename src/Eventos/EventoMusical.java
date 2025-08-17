@@ -7,7 +7,7 @@ import Tipos.TipoMusica;
 public class EventoMusical extends Evento {
 
     private TipoMusica tipoMusica;
-    private ArrayList<String> staffTecnico;
+    private final ArrayList<String> staffTecnico;
 
     public static final int CANTIDAD_MAXIMA = 25_000;
     public static final double PORCENTAJE_SEGURO = 0.30;

@@ -4,7 +4,6 @@ import Eventos.Evento;
 import Eventos.EventoDeportivo;
 import Eventos.EventoMusical;
 import Eventos.EventoReligioso;
-import Tipos.TipoMusica;
 import Tipos.TipoDeporte;
 import Usuarios.Administrador;
 import Usuarios.Contenido;
@@ -25,6 +24,10 @@ public class FrmEditarEvento extends BaseFrame {
     private JPanel panelJugadores;
     private JTable tablaJugadores;
     private DefaultTableModel modeloJugador;
+
+    private JPanel panelStaff;
+    private JTable tablaStaff;
+    private DefaultTableModel modeloStaff;
 
     public FrmEditarEvento() {
         super("Editar Evento", 920, 580);
@@ -171,6 +174,33 @@ public class FrmEditarEvento extends BaseFrame {
         JLabel lblValorMusica = crearLabel("-", 130, 0, 70, 25, Font.BOLD, 12F);
         panelMusical.add(lblValorMusica);
 
+        //panel staff musical
+        panelStaff = new JPanel(null);
+        panelStaff.setOpaque(false);
+        panelStaff.setBounds(470, 0, 400, 200);
+        panelCentro.add(panelStaff);
+
+        modeloStaff = new DefaultTableModel(new Object[]{"#", "Nombre"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col > 0;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? Integer.class : String.class;
+            }
+        };
+        tablaStaff = new JTable(modeloStaff);
+        tablaStaff.setForeground(Color.decode("#1A2332"));
+        JScrollPane spStaff = new JScrollPane(tablaStaff);
+        spStaff.setBounds(0, 0, 400, 200);
+        panelStaff.add(spStaff);
+        tablaStaff.getColumnModel().getColumn(0).setMaxWidth(50);
+        tablaStaff.getColumnModel().getColumn(0).setMinWidth(40);
+        tablaStaff.setRowHeight(22);
+        tablaStaff.setFillsViewportHeight(true);
+
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
         panelReligioso.setBounds(35, 280, 400, 90);
@@ -219,6 +249,7 @@ public class FrmEditarEvento extends BaseFrame {
             panelMusical.setVisible(false);
             panelReligioso.setVisible(false);
             panelJugadores.setVisible(false);
+            panelStaff.setVisible(false);
 
             if (evt instanceof EventoDeportivo) {
                 EventoDeportivo ed = (EventoDeportivo) evt;
@@ -253,10 +284,13 @@ public class FrmEditarEvento extends BaseFrame {
 
             } else if (evt instanceof EventoMusical) {
                 EventoMusical em = (EventoMusical) evt;
-                
+
                 lblTipoValor.setText("MUSICAL");
                 lblValorMusica.setText(em.getTipoMusica().name());
+
+                cargarStaff(em);
                 panelMusical.setVisible(true);
+                panelStaff.setVisible(true);
 
             } else if (evt instanceof EventoReligioso) {
                 lblTipoValor.setText("RELIGIOSO");
@@ -265,14 +299,14 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             Calendar hoy = Calendar.getInstance();
+            boolean eventoFuturo = hoy.before(evt.getFechaRealizar());
 
-            if (hoy.before(evt.getFechaRealizar())) {
-                dateChooser.setEnabled(true);
-                txtTitulo.setEnabled(true);
-                txtDescripcion.setEnabled(true);
-                txtMontoRenta.setEnabled(true);
-                txtConvertidos.setEnabled(false);
-            }
+            txtTitulo.setEnabled(eventoFuturo);
+            txtDescripcion.setEnabled(eventoFuturo);
+            txtMontoRenta.setEnabled(eventoFuturo);
+            dateChooser.setEnabled(eventoFuturo);
+
+            txtConvertidos.setEnabled(!eventoFuturo && (evt instanceof EventoReligioso));
         });
 
         btnGuardar.addActionListener(e -> {
@@ -334,6 +368,10 @@ public class FrmEditarEvento extends BaseFrame {
                 String equipo1 = txtEquipo1.getText().trim();
                 String equipo2 = txtEquipo2.getText().trim();
 
+                if (tablaJugadores != null && tablaJugadores.isEditing()) {
+                    tablaJugadores.getCellEditor().stopCellEditing();
+                }
+
                 ArrayList<String> jugadores1 = new ArrayList<>();
                 ArrayList<String> jugadores2 = new ArrayList<>();
                 for (int r = 0; r < modeloJugador.getRowCount(); r++) {
@@ -375,6 +413,36 @@ public class FrmEditarEvento extends BaseFrame {
                 JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
                         : "Error: no se pudo guardar.");
 
+            } else if ("MUSICAL".equalsIgnoreCase(tipoEvt)) {
+                Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
+
+                double monto;
+                try {
+                    monto = Double.parseDouble(montoTexto);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
+                    return;
+                }
+
+                EventoMusical em = (EventoMusical) evt;
+                ArrayList<String> staff;
+                try {
+                    staff = leerStaffTabla();
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage());
+                    return;
+                }
+
+                boolean exitoso = manejoEventos.editarEventoMusical(
+                        usuarioLogeado,
+                        codigo, titulo, descripcion, fecha, monto,
+                        em.getTipoMusica(), // no permitimos cambiar el tipo aquí
+                        staff
+                );
+
+                JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
+                        : "Error: no se pudo guardar.");
+
             } else if ("RELIGIOSO".equalsIgnoreCase(tipoEvt)) {
                 Usuario usuarioLogeado = manejoUsuarios.getUsuarioLogeado();
                 double monto;
@@ -388,7 +456,7 @@ public class FrmEditarEvento extends BaseFrame {
                 EventoReligioso er = (EventoReligioso) evt;
                 int convertidos;
 
-                if (hoy.after(fecha)) {
+                if (hoy.after(fechaSel)) {
                     String convertidosTexto = txtConvertidos.getText().trim();
                     if (convertidosTexto.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Error: ingrese la cantidad de convertidos.");
@@ -426,13 +494,15 @@ public class FrmEditarEvento extends BaseFrame {
         panelMusical.setVisible(false);
         panelReligioso.setVisible(false);
         panelJugadores.setVisible(false);
+        panelStaff.setVisible(false);
         setContentPane(panelPrincipal);
     }
 
+    //métodos para equipos
     private void rellenarTablaJugadores(int filas) {
         modeloJugador.setRowCount(0);
-        for (int i = 1; i <= filas; i++) {
-            modeloJugador.addRow(new Object[]{i, "", ""});
+        for (int i = 0; i < filas; i++) {
+            modeloJugador.addRow(new Object[]{i + 1, "", ""});
         }
     }
 
@@ -449,6 +519,46 @@ public class FrmEditarEvento extends BaseFrame {
         }
     }
 
+    //métodos para staff
+    private void cargarStaff(EventoMusical em) {
+        int n = (em.getStaffTecnico() != null) ? em.getStaffTecnico().size() : 0;
+        int filas = Math.max(n, 1);
+        rellenarTablaStaff(filas);
+        for (int i = 0; i < n; i++) {
+            String nombre = em.getStaffTecnico().get(i);
+            modeloStaff.setValueAt(nombre == null ? "" : nombre.trim(), i, 1);
+        }
+    }
+
+    private void rellenarTablaStaff(int filas) {
+        modeloStaff.setRowCount(0);
+        for (int i = 0; i < filas; i++) {
+            modeloStaff.addRow(new Object[]{i + 1, ""});
+        }
+    }
+
+    private ArrayList<String> leerStaffTabla() {
+        if (tablaStaff != null && tablaStaff.isEditing()) {
+            tablaStaff.getCellEditor().stopCellEditing();
+        }
+
+        ArrayList<String> out = new ArrayList<>();
+
+        for (int r = 0; r < modeloStaff.getRowCount(); r++) {
+            Object v = modeloStaff.getValueAt(r, 1);
+            String s = (v == null) ? "" : v.toString().trim();
+
+            if (s.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Fila " + (r + 1) + " del staff está vacía."
+                );
+            }
+            out.add(s);
+        }
+        return out;
+    }
+
+    //verificar que sea el creador realmente
     private boolean esCreador(Usuario usuario, String codigo) {
         if (usuario == null || codigo == null) {
             return false;
