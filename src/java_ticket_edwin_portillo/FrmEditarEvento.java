@@ -191,15 +191,46 @@ public class FrmEditarEvento extends BaseFrame {
                 return columnIndex == 0 ? Integer.class : String.class;
             }
         };
+
         tablaStaff = new JTable(modeloStaff);
         tablaStaff.setForeground(Color.decode("#1A2332"));
+
         JScrollPane spStaff = new JScrollPane(tablaStaff);
-        spStaff.setBounds(0, 0, 400, 200);
+        spStaff.setBounds(0, 0, 400, 170);
         panelStaff.add(spStaff);
-        tablaStaff.getColumnModel().getColumn(0).setMaxWidth(50);
-        tablaStaff.getColumnModel().getColumn(0).setMinWidth(40);
-        tablaStaff.setRowHeight(22);
-        tablaStaff.setFillsViewportHeight(true);
+
+        JButton btnAgregarStaff = crearBoton("Agregar", 0, 180, 120, 25);
+        JButton btnEliminarStaff = crearBoton("Eliminar", 130, 180, 120, 25);
+        panelStaff.add(btnAgregarStaff);
+        panelStaff.add(btnEliminarStaff);
+
+        tablaStaff.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        btnAgregarStaff.addActionListener(ev -> {
+            if (tablaStaff.isEditing()) {
+                tablaStaff.getCellEditor().stopCellEditing();
+            }
+            int next = modeloStaff.getRowCount() + 1;
+            modeloStaff.addRow(new Object[]{next, ""});
+        });
+
+        btnEliminarStaff.addActionListener(ev -> {
+            if (tablaStaff.isEditing()) {
+                tablaStaff.getCellEditor().stopCellEditing();
+            }
+            int[] sel = tablaStaff.getSelectedRows();
+            if (sel == null || sel.length == 0) {
+                JOptionPane.showMessageDialog(this, "Selecciona una o más filas del staff para eliminar.");
+                return;
+            }
+            for (int i = sel.length - 1; i >= 0; i--) {
+                modeloStaff.removeRow(sel[i]);
+            }
+            if (modeloStaff.getRowCount() == 0) {
+                modeloStaff.addRow(new Object[]{1, ""});
+            }
+            renumerarPrimeraColumna(modeloStaff);
+        });
 
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
@@ -578,6 +609,12 @@ public class FrmEditarEvento extends BaseFrame {
             }
         }
         return false;
+    }
+
+    private void renumerarPrimeraColumna(DefaultTableModel m) {
+        for (int i = 0; i < m.getRowCount(); i++) {
+            m.setValueAt(i + 1, i, 0);
+        }
     }
 
     public static void main(String[] args) {
