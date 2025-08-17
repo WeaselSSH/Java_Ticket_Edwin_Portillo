@@ -1,7 +1,6 @@
 package java_ticket_edwin_portillo;
 
 import java.awt.Color;
-import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
