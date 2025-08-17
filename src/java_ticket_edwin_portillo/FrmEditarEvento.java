@@ -177,7 +177,7 @@ public class FrmEditarEvento extends BaseFrame {
         //panel staff musical
         panelStaff = new JPanel(null);
         panelStaff.setOpaque(false);
-        panelStaff.setBounds(470, 0, 400, 200);
+        panelStaff.setBounds(470, 0, 400, 230);
         panelCentro.add(panelStaff);
 
         modeloStaff = new DefaultTableModel(new Object[]{"#", "Nombre"}, 0) {
@@ -299,7 +299,7 @@ public class FrmEditarEvento extends BaseFrame {
                 int filasBase = jugadoresPorEquipo(ed.getTipoDeporte());
                 int tam1 = (lista1 != null) ? lista1.size() : 0;
                 int tam2 = (lista2 != null) ? lista2.size() : 0;
-                int filas = Math.max(filasBase, Math.max(tam1, tam2));
+                int filas = filasBase;
 
                 rellenarTablaJugadores(filas);
 
@@ -360,6 +360,7 @@ public class FrmEditarEvento extends BaseFrame {
             }
 
             Calendar hoy = Calendar.getInstance();
+
             //se setea todo en 0 para que tome en cuenta el inicio del día
             hoy.set(Calendar.HOUR_OF_DAY, 0);
             hoy.set(Calendar.MINUTE, 0);
@@ -373,6 +374,25 @@ public class FrmEditarEvento extends BaseFrame {
             fechaSel.set(Calendar.MINUTE, 0);
             fechaSel.set(Calendar.SECOND, 0);
             fechaSel.set(Calendar.MILLISECOND, 0);
+
+            boolean eraFuturo = hoy.before(evt.getFechaRealizar());
+            boolean esFuturoNuevo = hoy.before(fechaSel);
+
+            if (eraFuturo && !esFuturoNuevo) {
+                JOptionPane.showMessageDialog(this,
+                        "No puedes mover un evento futuro a una fecha pasada.");
+                return;
+            }
+
+            if (!eraFuturo) {
+                boolean mismaFecha = evt.getFechaRealizar().get(Calendar.YEAR) == fechaSel.get(Calendar.YEAR)
+                        && evt.getFechaRealizar().get(Calendar.DAY_OF_YEAR) == fechaSel.get(Calendar.DAY_OF_YEAR);
+                if (!mismaFecha) {
+                    JOptionPane.showMessageDialog(this,
+                            "No puedes cambiar la fecha de un evento pasado.");
+                    return;
+                }
+            }
 
             Evento choque = manejoEventos.choqueFecha(fechaSel);
             if (choque != null && !choque.getCodigo().equalsIgnoreCase(codigo)) {
@@ -392,24 +412,27 @@ public class FrmEditarEvento extends BaseFrame {
                     tablaJugadores.getCellEditor().stopCellEditing();
                 }
 
+                for (int r = 0; r < modeloJugador.getRowCount(); r++) {
+                    Object o1 = modeloJugador.getValueAt(r, 1);
+                    Object o2 = modeloJugador.getValueAt(r, 2);
+                    String s1 = (o1 == null) ? "" : o1.toString().trim();
+                    String s2 = (o2 == null) ? "" : o2.toString().trim();
+                    if (s1.isEmpty() || s2.isEmpty()) {
+                        JOptionPane.showMessageDialog(this,
+                                "Error: completa ambos equipos en la fila " + (r + 1) + ".");
+                        return;
+                    }
+                }
+
                 ArrayList<String> jugadores1 = new ArrayList<>();
                 ArrayList<String> jugadores2 = new ArrayList<>();
                 for (int r = 0; r < modeloJugador.getRowCount(); r++) {
-                    Object v1 = modeloJugador.getValueAt(r, 1);
-                    if (v1 instanceof String) {
-                        String s = ((String) v1).trim();
-                        if (!s.isEmpty()) {
-                            jugadores1.add(s);
-                        }
-                    }
-                    Object v2 = modeloJugador.getValueAt(r, 2);
-                    if (v2 instanceof String) {
-                        String s = ((String) v2).trim();
-                        if (!s.isEmpty()) {
-                            jugadores2.add(s);
-                        }
-                    }
+                    Object o1 = modeloJugador.getValueAt(r, 1);
+                    Object o2 = modeloJugador.getValueAt(r, 2);
+                    jugadores1.add((o1 == null) ? "" : o1.toString().trim());
+                    jugadores2.add((o2 == null) ? "" : o2.toString().trim());
                 }
+
                 String[] arr1 = jugadores1.toArray(new String[0]);
                 String[] arr2 = jugadores2.toArray(new String[0]);
 

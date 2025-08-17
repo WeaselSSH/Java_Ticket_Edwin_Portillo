@@ -227,6 +227,19 @@ public class FrmCrearEvento extends BaseFrame {
                     break;
             }
 
+            Calendar hoy0 = Calendar.getInstance();
+            hoy0.set(Calendar.HOUR_OF_DAY, 0);
+            hoy0.set(Calendar.MINUTE, 0);
+            hoy0.set(Calendar.SECOND, 0);
+            hoy0.set(Calendar.MILLISECOND, 0);
+
+            if (fechaSel.before(hoy0)) {
+                Evento eventoCreado = manejoEventos.buscarEvento(codigo);
+                if (eventoCreado != null) {
+                    eventoCreado.setRealizado();
+                }
+            }
+
             //vaciar campos y refrescar código
             txtTituloEvento.setText("");
             txtDescripcion.setText("");
