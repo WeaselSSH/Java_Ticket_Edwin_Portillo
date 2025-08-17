@@ -105,7 +105,6 @@ public class FrmVerEvento extends BaseFrame {
             if (manejoUsuarios.getUsuarioLogeado() instanceof Limitado) {
                 new FrmMenuLimitado().setVisible(true);
                 this.dispose();
-                return;
             } else {
                 new FrmEventos().setVisible(true);
                 this.dispose();

@@ -474,12 +474,3 @@ public class FrmEditarEvento extends BaseFrame {
         new FrmEditarEvento().setVisible(true);
     }
 }
-//REPORTES
-//EDITAR EVENTO STAFF MUSICAL
-//ver evento mostrar su creador?
-//regresar al menú principal?
-//fecha?
-//final classes
-//CLASE FINAL, MéTODO FINAL.
-//si se puede cambiar color al estar disabled
-//convertidos solo si es after hoy
