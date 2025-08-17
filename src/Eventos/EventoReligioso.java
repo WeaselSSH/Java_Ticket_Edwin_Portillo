@@ -2,7 +2,7 @@ package Eventos;
 
 import java.util.Calendar;
 
-public class EventoReligioso extends Evento {
+public final class EventoReligioso extends Evento {
 
     private int cantidadConvertidos;
 

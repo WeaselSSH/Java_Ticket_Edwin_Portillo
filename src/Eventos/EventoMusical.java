@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import Tipos.TipoMusica;
 
-public class EventoMusical extends Evento {
+public final class EventoMusical extends Evento {
 
     private TipoMusica tipoMusica;
     private final ArrayList<String> staffTecnico;

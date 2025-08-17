@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import Tipos.TipoDeporte;
 
-public class EventoDeportivo extends Evento {
+public final class EventoDeportivo extends Evento {
 
     private TipoDeporte tipoDeporte;
     private String equipo1;
