@@ -15,7 +15,7 @@ public class FrmCrearEvento extends BaseFrame {
     private final ManejoUsuarios manejoUsuarios = ManejoUsuarios.getInstancia();
 
     public FrmCrearEvento() {
-        super("Crear Evento", 440, 560);
+        super("Crear Evento", 450, 570);
     }
 
     @Override
@@ -82,16 +82,21 @@ public class FrmCrearEvento extends BaseFrame {
         JTextField txtMontoRenta = crearTextField(170, 195, 200, 25);
         panelCentro.add(txtMontoRenta);
 
-        JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 250, 200, 25, Font.BOLD, 14f);
+        JLabel lblPersonas = crearLabel("Personas:", 35, 235, 150, 25, Font.BOLD, 14f);
+        panelCentro.add(lblPersonas);
+
+        JTextField txtPersonas = crearTextField(170, 235, 200, 25);
+        panelCentro.add(txtPersonas);
+
+        JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 270, 200, 25, Font.BOLD, 14f);
         panelCentro.add(lblTipo);
 
         String tipoEvento[] = {"DEPORTIVO", "MUSICAL", "RELIGIOSO"};
-        JComboBox<String> cboTipo = crearComboBox(tipoEvento, 170, 250, 200, 25);
+        JComboBox<String> cboTipo = crearComboBox(tipoEvento, 170, 270, 200, 25);
         panelCentro.add(cboTipo);
 
-        //PANEL DEPORTIVO
         JPanel panelDeportivo = new JPanel(null);
-        panelDeportivo.setBounds(35, 290, 400, 100);
+        panelDeportivo.setBounds(35, 310, 400, 100);
         panelDeportivo.setOpaque(false);
         panelCentro.add(panelDeportivo);
 
@@ -133,7 +138,7 @@ public class FrmCrearEvento extends BaseFrame {
         });
 
         //botón salir
-        JButton btnRegresar = crearBoton("Regresar", 220, 410, 140, 35);
+        JButton btnRegresar = crearBoton("Regresar", 220, 420, 140, 35);
         panelCentro.add(btnRegresar);
 
         btnRegresar.addActionListener(e -> {
@@ -142,7 +147,7 @@ public class FrmCrearEvento extends BaseFrame {
         });
 
         //botón crear
-        JButton btnCrear = crearBoton("Crear Evento", 60, 410, 140, 35);
+        JButton btnCrear = crearBoton("Crear Evento", 60, 420, 140, 35);
         panelCentro.add(btnCrear);
 
         btnCrear.addActionListener(e -> {
@@ -153,6 +158,7 @@ public class FrmCrearEvento extends BaseFrame {
             Calendar fechaRealizar = dateChooser.getCalendar();
             String tipo = (String) cboTipo.getSelectedItem();
             String montoTexto = txtMontoRenta.getText().trim();
+            String personasTexto = txtPersonas.getText().trim();
 
             if (titulo.isEmpty() || fechaRealizar == null || montoTexto.isEmpty() || descripcion.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Error: todos los campos generales deben estar llenos.");
@@ -168,6 +174,19 @@ public class FrmCrearEvento extends BaseFrame {
             }
             if (montoRenta < 0) {
                 JOptionPane.showMessageDialog(this, "Error: monto de renta no puede ser negativo.");
+                return;
+            }
+
+            int personas;
+            try {
+                personas = Integer.parseInt(personasTexto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Error: Capacidad máxima inválida.");
+                return;
+            }
+
+            if (personas < 0) {
+                JOptionPane.showMessageDialog(this, "Error: personas no puede ser menor a 0.");
                 return;
             }
 
@@ -192,11 +211,19 @@ public class FrmCrearEvento extends BaseFrame {
 
             switch (tipo) {
                 case "RELIGIOSO":
+                    if (personas > 30000) {
+                        JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (30,000).");
+                        return;
+                    }
                     manejoEventos.crearEventoReligioso(usuarioLogeado, codigo, titulo, descripcion, fechaRealizar, montoRenta);
                     JOptionPane.showMessageDialog(this, "Evento religioso creado correctamente.");
                     break;
 
                 case "MUSICAL":
+                    if (personas > 25000) {
+                        JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (25,000).");
+                        return;
+                    }
                     TipoMusica tipoMusica = (TipoMusica) cboMusica.getSelectedItem();
                     if (tipoMusica == null) {
                         JOptionPane.showMessageDialog(this, "Seleccione un tipo de música.");
@@ -207,6 +234,11 @@ public class FrmCrearEvento extends BaseFrame {
                     break;
 
                 case "DEPORTIVO":
+                    if (personas > 20000) {
+                        JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (20,000).");
+                        return;
+                    }
+
                     String equipo1 = txtEquipo1.getText().trim();
                     String equipo2 = txtEquipo2.getText().trim();
                     if (equipo1.isEmpty() || equipo2.isEmpty()) {
@@ -240,10 +272,16 @@ public class FrmCrearEvento extends BaseFrame {
                 }
             }
 
+            Evento eventoCreado = manejoEventos.buscarEvento(codigo);
+            if (eventoCreado != null) {
+                eventoCreado.setPersonas(personas);
+            }
+
             //vaciar campos y refrescar código
             txtTituloEvento.setText("");
             txtDescripcion.setText("");
             txtMontoRenta.setText("");
+            txtPersonas.setText("");
             txtEquipo1.setText("");
             txtEquipo2.setText("");
             dateChooser.setCalendar(null);

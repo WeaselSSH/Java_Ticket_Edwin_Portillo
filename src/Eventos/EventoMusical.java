@@ -9,7 +9,7 @@ public final class EventoMusical extends Evento {
     private TipoMusica tipoMusica;
     private final ArrayList<String> staffTecnico;
 
-    public static final int CANTIDAD_MAXIMA = 25_000;
+    public static final int CANTIDAD_MAXIMA = 25000;
     public static final double PORCENTAJE_SEGURO = 0.30;
 
     public EventoMusical(String codigo, String titulo, String descripcion, Calendar fechaRealizar,

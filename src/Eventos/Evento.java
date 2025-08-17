@@ -13,6 +13,8 @@ public abstract class Evento {
     protected boolean realizado = false;
     protected double multa = 0;
     protected boolean multaPagada = false;
+    
+    protected int personas;
 
     public Evento(String codigo, String titulo, String descripcion, Calendar fechaRealizar, double montoRenta) {
         this.codigo = codigo;
@@ -93,6 +95,10 @@ public abstract class Evento {
         }
     }
 
+    public void setPersonas(int personas) {
+        this.personas = personas;
+    }
+    
     public void pagarMulta() {
         this.multaPagada = true;
     }
@@ -111,6 +117,7 @@ public abstract class Evento {
                 + "\nDescripción: " + descripcion
                 + "\nFecha: " + fecha
                 + "\nMonto de Renta: L." + montoRenta
+                + "\nPersonas: " + personas
                 + "\nTipo: " + getTipo();
 
         String estado;

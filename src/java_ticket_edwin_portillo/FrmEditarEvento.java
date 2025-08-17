@@ -103,6 +103,13 @@ public class FrmEditarEvento extends BaseFrame {
         txtMontoRenta.setEnabled(false);
         panelCentro.add(txtMontoRenta);
 
+        JLabel lblPersonas = crearLabel("Personas:", 35, 275, 150, 25, Font.BOLD, 14f);
+        panelCentro.add(lblPersonas);
+
+        JTextField txtPersonas = crearTextField(170, 275, 200, 25);
+        txtPersonas.setEnabled(false);
+        panelCentro.add(txtPersonas);
+
         JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 240, 200, 25, Font.BOLD, 14f);
         panelCentro.add(lblTipo);
 
@@ -111,7 +118,7 @@ public class FrmEditarEvento extends BaseFrame {
 
         // PANEL DEPORTIVO
         JPanel panelDeportivo = new JPanel(null);
-        panelDeportivo.setBounds(35, 280, 400, 150);
+        panelDeportivo.setBounds(35, 310, 400, 150);
         panelDeportivo.setOpaque(false);
         panelCentro.add(panelDeportivo);
 
@@ -129,10 +136,10 @@ public class FrmEditarEvento extends BaseFrame {
         txtEquipo2.setEnabled(false);
         panelDeportivo.add(txtEquipo2);
 
-        JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 80, 120, 25, Font.BOLD, 12f);
+        JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 110, 120, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblTipoDeporte);
 
-        JLabel lbltipoDep = crearLabel("-", 130, 80, 170, 25, Font.BOLD, 12f);
+        JLabel lbltipoDep = crearLabel("-", 130, 110, 170, 25, Font.BOLD, 12f);
         panelDeportivo.add(lbltipoDep);
 
         //panel jugadores
@@ -164,7 +171,7 @@ public class FrmEditarEvento extends BaseFrame {
 
         // PANEL MUSICAL
         JPanel panelMusical = new JPanel(null);
-        panelMusical.setBounds(35, 280, 400, 90);
+        panelMusical.setBounds(35, 310, 400, 90);
         panelMusical.setOpaque(false);
         panelCentro.add(panelMusical);
 
@@ -234,7 +241,7 @@ public class FrmEditarEvento extends BaseFrame {
 
         //PANEL RELIGIOSO 
         JPanel panelReligioso = new JPanel(null);
-        panelReligioso.setBounds(35, 280, 400, 90);
+        panelReligioso.setBounds(35, 310, 400, 90);
         panelReligioso.setOpaque(false);
         panelCentro.add(panelReligioso);
 
