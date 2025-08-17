@@ -299,7 +299,7 @@ public class FrmEditarEvento extends BaseFrame {
                 int filasBase = jugadoresPorEquipo(ed.getTipoDeporte());
                 int tam1 = (lista1 != null) ? lista1.size() : 0;
                 int tam2 = (lista2 != null) ? lista2.size() : 0;
-                int filas = filasBase;
+                int filas = Math.max(filasBase, Math.max(tam1, tam2));
 
                 rellenarTablaJugadores(filas);
 
@@ -366,11 +366,6 @@ public class FrmEditarEvento extends BaseFrame {
             hoy.set(Calendar.SECOND, 0);
             hoy.set(Calendar.MILLISECOND, 0);
 
-            //días mínimos para crear el evento (2)
-            Calendar minimoDias = Calendar.getInstance();
-            minimoDias.setTime(hoy.getTime());
-            minimoDias.add(Calendar.DAY_OF_MONTH, 2);
-
             //fecha seleccionada en el dateChooser
             Calendar fechaSel = Calendar.getInstance();
             fechaSel.setTime(fecha.getTime());
@@ -378,12 +373,6 @@ public class FrmEditarEvento extends BaseFrame {
             fechaSel.set(Calendar.MINUTE, 0);
             fechaSel.set(Calendar.SECOND, 0);
             fechaSel.set(Calendar.MILLISECOND, 0);
-
-            if (fechaSel.before(minimoDias)) {
-                JOptionPane.showMessageDialog(this,
-                        "Error: la fecha debe ser al menos dentro de 2 días (más de 1 día después de hoy).");
-                return;
-            }
 
             Evento choque = manejoEventos.choqueFecha(fechaSel);
             if (choque != null && !choque.getCodigo().equalsIgnoreCase(codigo)) {

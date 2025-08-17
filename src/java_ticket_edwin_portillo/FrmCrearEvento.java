@@ -171,31 +171,13 @@ public class FrmCrearEvento extends BaseFrame {
                 return;
             }
 
-            Calendar hoy = Calendar.getInstance();
-            //se setea todo en 0 para que tome en cuenta el inicio del día
-            hoy.set(Calendar.HOUR_OF_DAY, 0);
-            hoy.set(Calendar.MINUTE, 0);
-            hoy.set(Calendar.SECOND, 0);
-            hoy.set(Calendar.MILLISECOND, 0);
-
-            //días mínimos para crear el evento (2)
-            Calendar minimoDias = Calendar.getInstance();
-            minimoDias.setTime(hoy.getTime());
-            minimoDias.add(Calendar.DAY_OF_MONTH, 2);
-
-            //fecha seleccionada en el dateChooser
+            //fecha seleccionada en el dateChooser (normalizado)
             Calendar fechaSel = Calendar.getInstance();
             fechaSel.setTime(fechaRealizar.getTime());
             fechaSel.set(Calendar.HOUR_OF_DAY, 0);
             fechaSel.set(Calendar.MINUTE, 0);
             fechaSel.set(Calendar.SECOND, 0);
             fechaSel.set(Calendar.MILLISECOND, 0);
-
-            if (fechaSel.before(minimoDias)) {
-                JOptionPane.showMessageDialog(this,
-                        "Error: la fecha debe ser al menos dentro de 2 días (más de 1 día después de hoy).");
-                return;
-            }
 
             Evento choque = manejoEventos.choqueFecha(fechaSel);
 
