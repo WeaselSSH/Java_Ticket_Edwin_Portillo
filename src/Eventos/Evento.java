@@ -99,6 +99,10 @@ public abstract class Evento {
         this.personas = personas;
     }
     
+    public int getPersonas() {
+        return personas;
+    }
+    
     public void pagarMulta() {
         this.multaPagada = true;
     }

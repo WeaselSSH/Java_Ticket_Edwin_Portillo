@@ -30,7 +30,7 @@ public class FrmEditarEvento extends BaseFrame {
     private DefaultTableModel modeloStaff;
 
     public FrmEditarEvento() {
-        super("Editar Evento", 920, 580);
+        super("Editar Evento", 920, 590);
     }
 
     @Override
@@ -107,7 +107,6 @@ public class FrmEditarEvento extends BaseFrame {
         panelCentro.add(lblPersonas);
 
         JTextField txtPersonas = crearTextField(170, 275, 200, 25);
-        txtPersonas.setEnabled(false);
         panelCentro.add(txtPersonas);
 
         JLabel lblTipo = crearLabel("Tipo de Evento:", 35, 240, 200, 25, Font.BOLD, 14f);
@@ -136,10 +135,10 @@ public class FrmEditarEvento extends BaseFrame {
         txtEquipo2.setEnabled(false);
         panelDeportivo.add(txtEquipo2);
 
-        JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 110, 120, 25, Font.BOLD, 12f);
+        JLabel lblTipoDeporte = crearLabel("Tipo de Deporte:", 0, 75, 120, 25, Font.BOLD, 12f);
         panelDeportivo.add(lblTipoDeporte);
 
-        JLabel lbltipoDep = crearLabel("-", 130, 110, 170, 25, Font.BOLD, 12f);
+        JLabel lbltipoDep = crearLabel("-", 130, 75, 170, 25, Font.BOLD, 12f);
         panelDeportivo.add(lbltipoDep);
 
         //panel jugadores
@@ -252,10 +251,10 @@ public class FrmEditarEvento extends BaseFrame {
         panelReligioso.add(txtConvertidos);
 
         // BOTONES
-        JButton btnGuardar = crearBoton("Guardar Cambios", 60, 415, 160, 35);
+        JButton btnGuardar = crearBoton("Guardar Cambios", 60, 425, 160, 35);
         panelCentro.add(btnGuardar);
 
-        JButton btnRegresar = crearBoton("Regresar", 240, 415, 160, 35);
+        JButton btnRegresar = crearBoton("Regresar", 240, 425, 160, 35);
         panelCentro.add(btnRegresar);
 
         btnCargar.addActionListener(e -> {
@@ -282,6 +281,7 @@ public class FrmEditarEvento extends BaseFrame {
             txtDescripcion.setText(evt.getDescripcion());
             dateChooser.setCalendar(evt.getFechaRealizar());
             txtMontoRenta.setText(Double.toString(evt.getMontoRenta()));
+            txtPersonas.setText(String.valueOf(evt.getPersonas()));
 
             panelDeportivo.setVisible(false);
             panelMusical.setVisible(false);
@@ -353,6 +353,20 @@ public class FrmEditarEvento extends BaseFrame {
             String descripcion = txtDescripcion.getText().trim();
             Calendar fecha = dateChooser.getCalendar();
             String montoTexto = txtMontoRenta.getText().trim();
+            String personasTexto = txtPersonas.getText().trim();
+
+            int personas;
+            try {
+                personas = Integer.parseInt(personasTexto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Error: Capacidad máxima inválida.");
+                return;
+            }
+
+            if (personas < 0) {
+                JOptionPane.showMessageDialog(this, "Error: personas no puede ser menor a 0.");
+                return;
+            }
 
             if (codigo.isEmpty() || titulo.isEmpty() || descripcion.isEmpty()
                     || fecha == null || montoTexto.isEmpty()) {
@@ -455,10 +469,19 @@ public class FrmEditarEvento extends BaseFrame {
                     return;
                 }
 
+                if (personas > 20000) {
+                    JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (20,000).");
+                    return;
+                }
+
                 boolean exitoso = manejoEventos.editarEventoDeportivo(
                         usuarioLogeado, codigo, titulo, descripcion, fecha,
                         monto, equipo1, equipo2, deporte, arr1, arr2
                 );
+
+                if (exitoso) {
+                    evt.setPersonas(personas);
+                }
 
                 JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
                         : "Error: no se pudo guardar.");
@@ -474,6 +497,11 @@ public class FrmEditarEvento extends BaseFrame {
                     return;
                 }
 
+                if (personas > 25000) {
+                    JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (25,000).");
+                    return;
+                }
+
                 EventoMusical em = (EventoMusical) evt;
                 ArrayList<String> staff;
                 try {
@@ -486,9 +514,13 @@ public class FrmEditarEvento extends BaseFrame {
                 boolean exitoso = manejoEventos.editarEventoMusical(
                         usuarioLogeado,
                         codigo, titulo, descripcion, fecha, monto,
-                        em.getTipoMusica(), // no permitimos cambiar el tipo aquí
+                        em.getTipoMusica(),
                         staff
                 );
+
+                if (exitoso) {
+                    evt.setPersonas(personas);
+                }
 
                 JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
                         : "Error: no se pudo guardar.");
@@ -500,6 +532,11 @@ public class FrmEditarEvento extends BaseFrame {
                     monto = Double.parseDouble(montoTexto);
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Error: monto de renta inválido.");
+                    return;
+                }
+
+                if (personas > 30000) {
+                    JOptionPane.showMessageDialog(this, "Error: capacidad máxima excedida (30,000).");
                     return;
                 }
 
@@ -529,6 +566,10 @@ public class FrmEditarEvento extends BaseFrame {
                 boolean exitoso = manejoEventos.editarEventoReligioso(
                         usuarioLogeado, codigo, titulo, descripcion, fecha, monto, convertidos
                 );
+
+                if (exitoso) {
+                    evt.setPersonas(personas);
+                }
 
                 JOptionPane.showMessageDialog(this, exitoso ? "Cambios guardados correctamente."
                         : "Error: no se pudo guardar.");

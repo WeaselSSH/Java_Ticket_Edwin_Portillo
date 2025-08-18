@@ -120,7 +120,7 @@ public class FrmCrearEvento extends BaseFrame {
 
         //PANEL MUSICAL
         JPanel panelMusical = new JPanel(null);
-        panelMusical.setBounds(35, 290, 400, 50);
+        panelMusical.setBounds(35, 320, 400, 50);
         panelMusical.setOpaque(false);
         panelCentro.add(panelMusical);
 
