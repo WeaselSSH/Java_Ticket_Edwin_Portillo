@@ -88,6 +88,8 @@ public class FrmReportes extends BaseFrame {
         });
 
         btnPerfil.addActionListener(e -> {
+            new FrmPerfil().setVisible(true);
+            this.dispose();
         });
 
         btnRegresar.addActionListener(e -> {
