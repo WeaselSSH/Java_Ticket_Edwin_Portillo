@@ -280,4 +280,29 @@ public class ManejoEventos {
         return eventosOrdenados;
     }
 
+    public ArrayList<Evento> listarEventosFuturos() {
+        ArrayList<Evento> eventosFuturosOrdenados = new ArrayList<>();
+
+        for (int i = 0; i < eventos.size(); i++) {
+            Evento e = eventos.get(i);
+            if (e != null && !e.getCancelado() && !e.getRealizado()) {
+                long tiempoNuevo = e.getFechaRealizar().getTimeInMillis();
+
+                // insertar en orden: más cercano ? más lejano (ascendente por fecha)
+                int pos = 0;
+                while (pos < eventosFuturosOrdenados.size()) {
+                    Evento actual = eventosFuturosOrdenados.get(pos);
+                    long tiempoActual = actual.getFechaRealizar().getTimeInMillis();
+                    if (tiempoActual <= tiempoNuevo) {
+                        pos++;
+                    } else {
+                        break;
+                    }
+                }
+                eventosFuturosOrdenados.add(pos, e);
+            }
+        }
+        return eventosFuturosOrdenados;
+    }
+
 }

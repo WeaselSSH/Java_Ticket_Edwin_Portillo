@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmEventosRealizados extends BaseFrame {
+public class FrmEventosFuturos extends BaseFrame {
 
     private JTable tablaEventos;
     private DefaultTableModel modeloEventos;
@@ -32,8 +32,8 @@ public class FrmEventosRealizados extends BaseFrame {
 
     private final ManejoEventos manejoEventos = ManejoEventos.getInstancia();
 
-    public FrmEventosRealizados() {
-        super("Eventos Realizados", 920, 600);
+    public FrmEventosFuturos() {
+        super("Eventos Futuros", 920, 600);
         cargarDatos();
     }
 
@@ -63,7 +63,7 @@ public class FrmEventosRealizados extends BaseFrame {
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
         //resto de UI
-        JLabel lblTitulo = crearLabel("Eventos Realizados", 0, 0, 0, 0, Font.BOLD, 21f);
+        JLabel lblTitulo = crearLabel("Eventos Futuros", 0, 0, 0, 0, Font.BOLD, 21f);
         lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
 
@@ -74,7 +74,6 @@ public class FrmEventosRealizados extends BaseFrame {
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
-
         };
 
         tablaEventos = new JTable(modeloEventos);
@@ -153,9 +152,9 @@ public class FrmEventosRealizados extends BaseFrame {
     private void cargarDatos() {
         modeloEventos.setRowCount(0);
 
-        ArrayList<Evento> eventosRealizados = manejoEventos.listarEventosRealizados();
+        ArrayList<Evento> eventosFuturos = manejoEventos.listarEventosFuturos();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
         int cantidadDeportivos = 0;
         int cantidadReligiosos = 0;
@@ -165,13 +164,13 @@ public class FrmEventosRealizados extends BaseFrame {
         double montoTotalReligiosos = 0.0;
         double montoTotalMusicales = 0.0;
 
-        for (int i = 0; i < eventosRealizados.size(); i++) {
-            Evento evento = eventosRealizados.get(i);
+        for (int i = 0; i < eventosFuturos.size(); i++) {
+            Evento evento = eventosFuturos.get(i);
 
             String codigo = evento.getCodigo();
             String tipo = evento.getTipo();
             String titulo = evento.getTitulo();
-            String fechaFormateada = sdf.format(evento.getFechaRealizar().getTime());
+            String fechaFormateada = formatoFecha.format(evento.getFechaRealizar().getTime());
             String montoFormateado = String.format("L.%.2f", evento.getMontoRenta());
 
             modeloEventos.addRow(new Object[]{codigo, tipo, titulo, fechaFormateada, montoFormateado});
@@ -198,6 +197,6 @@ public class FrmEventosRealizados extends BaseFrame {
     }
 
     public static void main(String[] args) {
-        new FrmEventosRealizados().setVisible(true);
+        new FrmEventosFuturos().setVisible(true);
     }
 }
