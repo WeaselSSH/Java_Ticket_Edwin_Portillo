@@ -66,6 +66,7 @@ public class FrmIngresoPorFecha extends BaseFrame {
         panelCentro.setOpaque(false);
         panelPrincipal.add(panelCentro, BorderLayout.CENTER);
 
+        //resto de UI
         JLabel lblTitulo = crearLabel("Ingreso generado por fechas", 0, 0, 0, 0, Font.BOLD, 21f);
         lblTitulo.setForeground(java.awt.Color.decode("#5FA4F8"));
         panelNorte.add(lblTitulo);
