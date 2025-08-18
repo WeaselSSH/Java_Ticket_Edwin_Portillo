@@ -310,13 +310,13 @@ public class ManejoEventos {
         for (int i = 0; i < eventos.size(); i++) {
             Evento evt = eventos.get(i);
             if (evt != null && evt.getCancelado()) {
-                long tiempoNuevo = evt.getFechaRealizar().getTimeInMillis();
+                long tiempoMilis = evt.getFechaRealizar().getTimeInMillis();
 
                 int j = 0;
                 while (j < eventosCanceladosOrdenados.size()) {
                     Evento actual = eventosCanceladosOrdenados.get(j);
                     long tiempoActual = actual.getFechaRealizar().getTimeInMillis();
-                    if (tiempoActual > tiempoNuevo) {
+                    if (tiempoActual > tiempoMilis) {
                         j++;
                     } else {
                         break;
@@ -327,6 +327,51 @@ public class ManejoEventos {
         }
 
         return eventosCanceladosOrdenados;
+    }
+
+    public ArrayList<Evento> listarEventosEntreFechas(Calendar desde, Calendar hasta) {
+        ArrayList<Evento> eventosOrdenados = new ArrayList<>();
+        if (desde == null || hasta == null) {
+            return eventosOrdenados;
+        }
+
+        //normalización (como siempre)
+        Calendar d = Calendar.getInstance();
+        d.setTime(desde.getTime());
+        d.set(Calendar.HOUR_OF_DAY, 0);
+        d.set(Calendar.MINUTE, 0);
+        d.set(Calendar.SECOND, 0);
+        d.set(Calendar.MILLISECOND, 0);
+
+        Calendar h = Calendar.getInstance();
+        h.setTime(hasta.getTime());
+        h.set(Calendar.HOUR_OF_DAY, 23);
+        h.set(Calendar.MINUTE, 59);
+        h.set(Calendar.SECOND, 59);
+        h.set(Calendar.MILLISECOND, 999);
+
+        for (int i = 0; i < eventos.size(); i++) {
+            Evento evt = eventos.get(i);
+            if (evt == null) {
+                continue;
+            }
+
+            long t = evt.getFechaRealizar().getTimeInMillis();
+            if (t >= d.getTimeInMillis() && t <= h.getTimeInMillis()) {
+                int j = 0;
+                while (j < eventosOrdenados.size()) {
+                    Evento actual = eventosOrdenados.get(j);
+                    long ta = actual.getFechaRealizar().getTimeInMillis();
+                    if (ta <= t) {
+                        j++;
+                    } else {
+                        break;
+                    }
+                }
+                eventosOrdenados.add(j, evt);
+            }
+        }
+        return eventosOrdenados;
     }
 
 }

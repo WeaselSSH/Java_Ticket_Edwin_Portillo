@@ -73,12 +73,18 @@ public class FrmReportes extends BaseFrame {
         });
 
         btnFuturos.addActionListener(e -> {
+            new FrmEventosFuturos().setVisible(true);
+            this.dispose();
         });
 
         btnCancelados.addActionListener(e -> {
+            new FrmEventosCancelados().setVisible(true);
+            this.dispose();
         });
 
         btnIngresoFechas.addActionListener(e -> {
+            new FrmIngresoPorFecha().setVisible(true);
+            this.dispose();
         });
 
         btnPerfil.addActionListener(e -> {
