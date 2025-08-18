@@ -1,5 +1,6 @@
 package java_ticket_edwin_portillo;
 
+import Usuarios.Usuario;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -84,6 +85,23 @@ public class FrmReportes extends BaseFrame {
         });
 
         btnRegresar.addActionListener(e -> {
+            Usuario u = ManejoUsuarios.getInstancia().getUsuarioLogeado();
+            String rol = u.getRol().toLowerCase();
+
+            switch (rol) {
+                case "administrador":
+                    new FrmMenuAdmin().setVisible(true);
+                    this.dispose();
+                    break;
+                case "contenido":
+                    new FrmMenuContenido().setVisible(true);
+                    this.dispose();
+                    break;
+                case "limitado":
+                    new FrmMenuLimitado().setVisible(true);
+                    this.dispose();
+                    break;
+            }
         });
 
         setContentPane(panelPrincipal);

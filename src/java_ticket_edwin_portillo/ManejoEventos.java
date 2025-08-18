@@ -284,25 +284,49 @@ public class ManejoEventos {
         ArrayList<Evento> eventosFuturosOrdenados = new ArrayList<>();
 
         for (int i = 0; i < eventos.size(); i++) {
-            Evento e = eventos.get(i);
-            if (e != null && !e.getCancelado() && !e.getRealizado()) {
-                long tiempoNuevo = e.getFechaRealizar().getTimeInMillis();
+            Evento evt = eventos.get(i);
+            if (evt != null && !evt.getCancelado() && !evt.getRealizado()) {
+                long tiempoMilis = evt.getFechaRealizar().getTimeInMillis();
 
-                // insertar en orden: más cercano ? más lejano (ascendente por fecha)
-                int pos = 0;
-                while (pos < eventosFuturosOrdenados.size()) {
-                    Evento actual = eventosFuturosOrdenados.get(pos);
+                int j = 0;
+                while (j < eventosFuturosOrdenados.size()) {
+                    Evento actual = eventosFuturosOrdenados.get(j);
                     long tiempoActual = actual.getFechaRealizar().getTimeInMillis();
-                    if (tiempoActual <= tiempoNuevo) {
-                        pos++;
+                    if (tiempoActual <= tiempoMilis) {
+                        j++;
                     } else {
                         break;
                     }
                 }
-                eventosFuturosOrdenados.add(pos, e);
+                eventosFuturosOrdenados.add(j, evt);
             }
         }
         return eventosFuturosOrdenados;
+    }
+
+    public ArrayList<Evento> listarEventosCancelados() {
+        ArrayList<Evento> eventosCanceladosOrdenados = new ArrayList<>();
+
+        for (int i = 0; i < eventos.size(); i++) {
+            Evento evt = eventos.get(i);
+            if (evt != null && evt.getCancelado()) {
+                long tiempoNuevo = evt.getFechaRealizar().getTimeInMillis();
+
+                int j = 0;
+                while (j < eventosCanceladosOrdenados.size()) {
+                    Evento actual = eventosCanceladosOrdenados.get(j);
+                    long tiempoActual = actual.getFechaRealizar().getTimeInMillis();
+                    if (tiempoActual > tiempoNuevo) {
+                        j++;
+                    } else {
+                        break;
+                    }
+                }
+                eventosCanceladosOrdenados.add(j, evt);
+            }
+        }
+
+        return eventosCanceladosOrdenados;
     }
 
 }
