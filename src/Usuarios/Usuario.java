@@ -18,11 +18,11 @@ public abstract class Usuario {
 
     public abstract String getRol();
 
-    public String getNombre() {
+    public final String getNombre() {
         return nombre;
     }
 
-    public String getUsuario() {
+    public final String getUsuario() {
         return usuario;
     }
 
@@ -30,7 +30,7 @@ public abstract class Usuario {
         return contrasenia;
     }
 
-    public int getEdad() {
+    public final int getEdad() {
         return edad;
     }
 
@@ -60,10 +60,11 @@ public abstract class Usuario {
         eliminado = true;
     }
 
-    public boolean getEliminado() {
+    public final boolean getEliminado() {
         return eliminado;
     }
 
+    @Override
     public String toString() {
         return "Usuario: " + usuario
                 + "\nNombre: " + nombre

@@ -26,7 +26,7 @@ public abstract class Evento {
 
     public abstract String getTipo();
 
-    public String getCodigo() {
+    public final String getCodigo() {
         return codigo;
     }
 
@@ -42,15 +42,15 @@ public abstract class Evento {
         return (Calendar) fechaRealizar.clone();
     }
 
-    public double getMontoRenta() {
+    public final double getMontoRenta() {
         return montoRenta;
     }
 
-    public boolean getCancelado() {
+    public final boolean getCancelado() {
         return cancelado;
     }
 
-    public boolean getRealizado() {
+    public final boolean getRealizado() {
         return realizado;
     }
 
@@ -78,7 +78,7 @@ public abstract class Evento {
         this.montoRenta = montoRenta;
     }
 
-    public double getMulta() {
+    public final double getMulta() {
         return multa;
     }
 
