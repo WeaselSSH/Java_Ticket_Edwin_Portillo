@@ -205,8 +205,8 @@ public class FrmEditarEvento extends BaseFrame {
         spStaff.setBounds(0, 0, 400, 170);
         panelStaff.add(spStaff);
 
-        JButton btnAgregarStaff = crearBoton("Agregar", 0, 180, 120, 25);
-        JButton btnEliminarStaff = crearBoton("Eliminar", 130, 180, 120, 25);
+        JButton btnAgregarStaff = crearBoton("Agregar", 80, 180, 120, 25);
+        JButton btnEliminarStaff = crearBoton("Eliminar", 210, 180, 120, 25);
         panelStaff.add(btnAgregarStaff);
         panelStaff.add(btnEliminarStaff);
 

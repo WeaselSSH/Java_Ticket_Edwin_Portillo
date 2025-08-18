@@ -89,7 +89,7 @@ public class FrmIngresoPorFecha extends BaseFrame {
         panelCentro.add(btnCalcular);
 
         modeloEventos = new DefaultTableModel(
-                new Object[]{"Código", "Tipo", "Título", "Fecha", "Importe"}, 0
+                new Object[]{"Código", "Tipo", "Título", "Fecha", "Monto", "Multa"}, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -229,21 +229,25 @@ public class FrmIngresoPorFecha extends BaseFrame {
             String titulo = evt.getTitulo();
             String fecha = sdf.format(evt.getFechaRealizar().getTime());
 
-            double importe = evt.getCancelado() ? evt.getMulta() : evt.getMontoRenta();
-            String importeTexto = String.format("L.%.2f", importe);
+            double monto = evt.getCancelado() ? 0.0 : evt.getMontoRenta();
+            double multa = evt.getCancelado() ? evt.getMulta() : 0.0;
 
-            modeloEventos.addRow(new Object[]{codigo, tipo, titulo, fecha, importeTexto});
+            String montoTexto = String.format("L.%.2f", monto);
+            String multaTexto = String.format("L.%.2f", multa);
+
+            modeloEventos.addRow(new Object[]{codigo, tipo, titulo, fecha, montoTexto, multaTexto});
 
             if ("Deportivo".equalsIgnoreCase(tipo)) {
                 cantidadDeportivos++;
-                totalDeportivos += importe;
+                totalDeportivos += (monto + multa);
             } else if ("Religioso".equalsIgnoreCase(tipo)) {
                 cantidadReligiosos++;
-                totalReligiosos += importe;
+                totalReligiosos += (monto + multa);
             } else if ("Musical".equalsIgnoreCase(tipo)) {
                 cantidadMusicales++;
-                totalMusicales += importe;
+                totalMusicales += (monto + multa);
             }
+
         }
 
         txtDeportivos.setText(String.valueOf(cantidadDeportivos));
