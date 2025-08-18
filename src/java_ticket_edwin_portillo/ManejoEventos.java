@@ -255,4 +255,29 @@ public class ManejoEventos {
         return choqueFechaRecursiva(fecha, i + 1);
     }
 
+    public ArrayList<Evento> listarEventosRealizados() {
+        ArrayList<Evento> eventosOrdenados = new ArrayList<>();
+
+        // Recorrer lista de eventos
+        for (int i = 0; i < eventos.size(); i++) {
+            Evento evt = eventos.get(i);
+            if (evt != null && evt.getRealizado()) {
+                long tiempoMilis = evt.getFechaRealizar().getTimeInMillis();
+
+                int j = 0;
+                while (j < eventosOrdenados.size()) {
+                    Evento actual = eventosOrdenados.get(j);
+                    long tiempoActual = actual.getFechaRealizar().getTimeInMillis();
+                    if (tiempoActual > tiempoMilis) {
+                        j++;
+                    } else {
+                        break;
+                    }
+                }
+                eventosOrdenados.add(j, evt);
+            }
+        }
+        return eventosOrdenados;
+    }
+
 }

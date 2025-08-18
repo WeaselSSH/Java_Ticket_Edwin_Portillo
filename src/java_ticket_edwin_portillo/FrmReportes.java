@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
 public class FrmReportes extends BaseFrame {
 
     public FrmReportes() {
@@ -68,13 +67,19 @@ public class FrmReportes extends BaseFrame {
 
         //Acciones
         btnRealizados.addActionListener(e -> {
+            new FrmEventosRealizados().setVisible(true);
+            this.dispose();
         });
+
         btnFuturos.addActionListener(e -> {
         });
+
         btnCancelados.addActionListener(e -> {
         });
+
         btnIngresoFechas.addActionListener(e -> {
         });
+
         btnPerfil.addActionListener(e -> {
         });
 

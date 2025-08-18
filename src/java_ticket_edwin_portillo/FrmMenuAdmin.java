@@ -63,6 +63,8 @@ public class FrmMenuAdmin extends BaseFrame {
         });
 
         btnReportes.addActionListener(e -> {
+            new FrmReportes().setVisible(true);
+            this.dispose();
         });
 
         btnSalir.addActionListener(e -> {
